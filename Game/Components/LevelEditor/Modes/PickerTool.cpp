@@ -44,6 +44,8 @@ void PickerTool::OnUpdate() {
         }
     }
 
+    boundries.x = SnapToGrid(Camera::Instance().viewport.w/2 - pEditor->pTileMap->GetWidth(), 64);
+    boundries.y = SnapToGrid(Camera::Instance().viewport.h/2 - pEditor->pTileMap->GetHeight(), 64);
 
 
 }
@@ -55,12 +57,12 @@ void PickerTool::OnRender() {
     }
     else{
 
-        Engine::Instance().g_pRenderer->FillRect({0,0,1280,720});
+        Engine::Instance().g_pRenderer->FillRect({0,0,Camera::Instance().viewport.w,Camera::Instance().viewport.h});
     }
 
     UI::DrawRect(boundries, {255,0,0});
 
-        UI::DrawTexture(pEditor->pTileMap, boundries.x, boundries.y, 2.0f);
+    UI::DrawTexture(pEditor->pTileMap, boundries.x, boundries.y, 2.0f);
 
     UI::DrawRect(selrect, {255,0,0}, 1);
 
@@ -133,9 +135,8 @@ void PickerTool::Blurr() {
 
 PickerTool::PickerTool(LevelEditor *_pEditor) : pEditor(_pEditor) {
 
-
-    boundries.x = SnapToGrid(1280/2 - pEditor->pTileMap->GetWidth(), 64);
-    boundries.y = SnapToGrid(720/2 - pEditor->pTileMap->GetHeight(), 64);
+    boundries.x = SnapToGrid(Camera::Instance().viewport.w/2 - pEditor->pTileMap->GetWidth(), 64);
+    boundries.y = SnapToGrid(Camera::Instance().viewport.h/2 - pEditor->pTileMap->GetHeight(), 64);
     boundries.w = pEditor->pTileMap->GetWidth()*2;
     boundries.h = pEditor->pTileMap->GetHeight()*2;
 }

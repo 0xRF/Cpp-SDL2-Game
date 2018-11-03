@@ -12,11 +12,11 @@ public:
 
     Button(std::function<void(void)>& func, const SDL2pp::Rect dst, bool* pDisabled);
 
-    Button(const std::string& szMessage, std::function<void(void)>& func, const std::pair<int,int>& pos,  bool* pBDisabled, const int& scale);
-    Button(const std::string &szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale);
+    Button(const std::string szMessage, std::function<void(void)>& func, const std::pair<int,int>& pos,  bool* pBDisabled, const int& scale);
+    Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale);
 
 
-    void SetTopTexture(const std::string& szMessage, const SDL_Color normal, const SDL_Color hover);
+    void SetTopTexture(const std::string szMessage, const SDL_Color normal, const SDL_Color hover);
     void SetTopTexture(SDL2pp::Texture* normal, SDL2pp::Texture* pHover);
 
     void SetBottomTexture(SDL2pp::Texture* normal, SDL2pp::Texture* pHover, SDL2pp::Rect src);

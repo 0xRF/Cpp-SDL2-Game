@@ -11,32 +11,46 @@
 #include "../../imgui/imgui.h"
 #include "../Entities/GameManager.hpp"
 #include "../../Engine/Camera.hpp"
+#include <fstream>
 
 static Camera* pCam = nullptr;
 static SDL2pp::Texture *pTexture = nullptr;
 static int bpX = 0;
 static int bpY = 0;
 static int bpY2 = 0;
+std::vector<std::pair<int*, int>> mapButtonOffsets{};
+
 void MainMenu::Update(const float &deltaTime) {
     bpX = pCam->viewport.w / 2 - ((pTexture->GetWidth() * 4) / 2) + 110;
     bpY = pCam->viewport.h / 2 - ((pTexture->GetHeight() * 4) / 2) + 180;
     bpY2 = pCam->viewport.h / 2 - ((pTexture->GetHeight() * 4) / 2) + 240;
+
+
+    for(auto mpo : mapButtonOffsets){
+        *mpo.first = bpY2 = pCam->viewport.h / 2 - ((pTexture->GetHeight() * 4) / 2) + mpo.second;
+    }
+
 }
 bool bbDe = false;
-
+bool playClosed = true;
 void MainMenu::Render() {
 
 
     auto vp = pCam->viewport;
 
     static int scale = 4;
-    if (!bbDe || !bEndMenuClosed) {
+    if (!bbDe || !bEndMenuClosed || !playClosed) {
         UI::DrawTexture(pTexture, (pCam->viewport.w / 2) - (pTexture->GetWidth() * scale) / 2,
                         ( pCam->viewport.h / 2) - (pTexture->GetHeight() * scale) / 2, (float) scale);
         UI::DrawString("Memegeon",pCam->viewport.w / 2 - 60, pCam->viewport.h/2 - (pTexture->GetHeight() * scale)/2 + 40, 5, {0, 0, 0});
     }
 }
 
+
+void loadMap(const std::string map){
+    auto pPlayer = new Player;
+    GameManager::Instance()->pCurrentLevel = Level::LoadLevel("uLevel");
+}
 
 void MainMenu::Start() {
 
@@ -48,9 +62,29 @@ void MainMenu::Start() {
     bpY = pCam->viewport.h/2 - (pTexture->GetHeight() * 4)/2 + 160;
 
     std::function<void(void)> a = [&](){
-        auto pPlayer = new Player;
-        reinterpret_cast<GameManager*>(entity)->pCurrentLevel = Level::LoadLevel("uLevel");
+
+        std::ifstream fileStream("alllevels");
+        std::string lBuff;
+        bool exists = false;
+        int index = 0;
+
+        while(std::getline(fileStream, lBuff))
+        {
+            std::cout << "plz work " << lBuff.c_str();
+
+            int* yPos = new int;
+            mapButtonOffsets.push_back({yPos, 180 + index*60});
+            std::function<void()> aa = std::bind(&loadMap, lBuff);
+
+            auto play = new Button(lBuff.c_str(), aa, {&bpX, yPos}, &playClosed, 2);
+            index++;
+        }
+        fileStream.close();
+
+        std::cout << "INdex " << index << std::endl;
+
         bbDe = true;
+        playClosed = false;
     };
 
     std::function<void(void)> b = [&](){

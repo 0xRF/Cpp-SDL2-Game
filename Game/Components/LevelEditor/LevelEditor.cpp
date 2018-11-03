@@ -79,7 +79,7 @@ void LevelEditor::Render() {
     }
 
 
-    UI::DrawString(modeIndex[activeMode].c_str(), 1280/2, 50, 3, {0,255,99});
+    UI::DrawString(modeIndex[activeMode].c_str(), Camera::Instance().viewport.w/2, 50, 3, {0,255,99});
 
     RenderColliders();
 }
@@ -177,7 +177,29 @@ void LevelEditor::OnDestroy() {
 
 void LevelEditor::SaveMap(const std::string& szFileName) {
 
-int nError = 0;
+
+    std::ifstream fileStream("alllevels");
+    std::string lBuff;
+    bool exists = false;
+    while(std::getline(fileStream, lBuff))
+    {
+        if(lBuff == szFileName)
+        {
+            exists = true;
+            break;
+        }
+    }
+    fileStream.close();
+
+    if(!exists){
+        std::ofstream allLevels("alllevels", std::ios_base::app | std::ofstream::out);
+        allLevels << szFileName << std::endl;
+        allLevels.close();
+    }
+
+
+
+    int nError = 0;
 #if defined(_WIN32)
     nError = _mkdir(szFileName.c_str()); // can be used on Windows
 #else

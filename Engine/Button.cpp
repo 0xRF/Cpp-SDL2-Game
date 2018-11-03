@@ -13,7 +13,7 @@ Button::Button(std::function<void(void)>& func, const SDL2pp::Rect dst, bool* pD
 
 }
 
-void Button::SetTopTexture(const std::string &szMessage, const SDL_Color normal, const SDL_Color hover) {
+void Button::SetTopTexture(const std::string szMessage, const SDL_Color normal, const SDL_Color hover) {
    top = UI::TextureFromString(szMessage.c_str(), normal);
    topHover = UI::TextureFromString(szMessage.c_str(), hover);
 }
@@ -65,7 +65,7 @@ void Button::Render(const bool& bHovered) {
 }
 
 
-Button::Button(const std::string &szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
+Button::Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
 
     bottomHover = Engine::LoadTexture("assets/ui_button_hover.png");
     bottom = Engine::LoadTexture("assets/ui_button.png");
@@ -81,7 +81,7 @@ Button::Button(const std::string &szMessage, std::function<void(void)> &func, co
 }
 
 
-Button::Button(const std::string &szMessage, std::function<void(void)> &func, const std::pair<int, int> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
+Button::Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<int, int> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
 
     bottomHover = Engine::LoadTexture("assets/ui_button_hover.png");
     bottom = Engine::LoadTexture("assets/ui_button.png");

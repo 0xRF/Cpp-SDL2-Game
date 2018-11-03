@@ -1,15 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
-project(B-Rampage)
+project(Memegeon)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
 INCLUDE_DIRECTORIES(${SDL2PP_INCLUDE_DIRS})
+
+
 
 SET(SDL2PP_WITH_IMAGE ON)
 SET(SDL2PP_WITH_TTF ON)
 ADD_SUBDIRECTORY(extlib/libSDL2pp)
 
-add_executable(B-Rampage / Engine/Entity.hpp Engine/Entity.cpp
+add_executable(Memegeon / Engine/Entity.hpp Engine/Entity.cpp
         Engine/Engine.hpp Engine/Engine.cpp
         Engine/Component.hpp Game/Entities/Player.hpp
         Engine/Singleton.hpp Engine/Vector2.hpp
@@ -35,4 +39,4 @@ add_executable(B-Rampage / Engine/Entity.hpp Engine/Entity.cpp
         Game/Entities/Switch.hpp Game/Entities/Switch.cpp imgui_sdl.h imgui_sdl.cpp
         imgui_sdl.cpp imgui_sdl.h imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_demo.cpp imgui/imconfig.h imgui/imgui_internal.h imgui/imgui_widgets.cpp imgui/examples/imgui_impl_sdl.h imgui/examples/imgui_impl_sdl.cpp)
 
-TARGET_LINK_LIBRARIES(B-Rampage ${COMMON_LIBRARIES} ${SDL2PP_LIBRARIES})
+TARGET_LINK_LIBRARIES(Memegeon ${COMMON_LIBRARIES} ${SDL2PP_LIBRARIES})
