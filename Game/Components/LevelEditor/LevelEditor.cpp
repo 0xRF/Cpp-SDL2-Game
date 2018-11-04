@@ -69,7 +69,6 @@ void LevelEditor::Render() {
         for(auto szMap : savedMaps)
 
             if(ImGui::Button(szMap.c_str())) {
-                if(szMap != currentLevelName) {
 
                     this->colliderList.clear();
                     this->doorPosition = {0, 0};
@@ -90,11 +89,6 @@ void LevelEditor::Render() {
                     for (auto ent : mKeys)
                         ent->bDestroy = true;
                     mKeys.clear();
-
-
-                }
-                else
-                    continue;
 
                 LoadMap(szMap);
 
@@ -276,11 +270,13 @@ void LevelEditor::SaveMap(const std::string& szFileName) {
 
 }
 
-void LevelEditor::LoadMap(const std::string& szMapDir){
+void LevelEditor::LoadMap(const std::string& mapNme){
 
-    currentLevelName = szMapDir;
+    currentLevelName = mapNme;
 
-    std::ifstream fileStream(szMapDir + ".mdata");
+    std::string dir = mapNme + "/map";
+    std::ifstream fileStream(dir + ".mdata");
+
     std::string lBuff;
     while(std::getline(fileStream, lBuff))
     {
@@ -309,10 +305,12 @@ void LevelEditor::LoadMap(const std::string& szMapDir){
     fileStream.close();
 
     for(auto mode : editorModes)
-        mode.second->OnLoad(szMapDir);
+        mode.second->OnLoad(dir);
 
 
     std::cout << "Finished loading map: " << currentLevelName <<  std::endl;
+
+    std::cout << "Loaded : " << colliderList.size() <<  std::endl;
 }
 
 void LevelEditor::UpdateCamera(const float &deltaTime) {
