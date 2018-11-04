@@ -13,19 +13,16 @@
 #include "Entities/TutKey.hpp"
 
 
-Level* Level::LoadLevel(const std::string &szMapName) {
+Level* Level::LoadLevel(const std::string &szMap) {
 
     auto pLevel = new Level();
 
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".mdata", sizeof(buffer));
-
-    std::ifstream fileStream(buffer);
+    std::ifstream fileStream(szMap + ".mdata");
     std::string lBuff;
 
     if(!fileStream)
     {
+        std::cout << "what the fucking dennis\n";
         return nullptr;
     }
 
@@ -54,24 +51,23 @@ Level* Level::LoadLevel(const std::string &szMapName) {
     }
 
 
-    pLevel->LoadColliders(szMapName);
-    pLevel->LoadDoor(szMapName);
-    pLevel->LoadKey(szMapName);
-    pLevel->LoadSpikes(szMapName);
-    pLevel->LoadSwitch(szMapName);
-    pLevel->LoadTutKeys(szMapName);
+    pLevel->LoadColliders(szMap);
+    pLevel->LoadDoor(szMap);
+    pLevel->LoadKey(szMap);
+    pLevel->LoadSpikes(szMap);
+    pLevel->LoadSwitch(szMap);
+    pLevel->LoadTutKeys(szMap);
+
+    std::cout << "Plz not crash  " << pLevel->worldColliders.size() << std::endl;
 
     return pLevel;
 
 }
 
-void Level::LoadColliders(const std::string &szMapName) {
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".cdata", sizeof(buffer));
+void Level::LoadColliders(const std::string &szMapDir) {
 
     std::string lBuff;
-    std::ifstream fColliders(buffer);
+    std::ifstream fColliders(szMapDir + ".cdata");
 
     if(!fColliders)
     {
@@ -89,21 +85,18 @@ void Level::LoadColliders(const std::string &szMapName) {
             data[i] = std::stoi(buff);
         }
 
-        auto pEnt = new Empty({(float) data[0], (float) data[1]});
+        auto pEnt = new Empty();
+        pEnt->position = {data[0], data[1]};
        worldColliders.push_back(pEnt->AddComponent<Collider>({data[2], data[3]}));
 
     }
-
     fColliders.close();
 }
 
-void Level::LoadDoor(const std::string &szMapName) {
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".ddata", sizeof(buffer));
+void Level::LoadDoor(const std::string &szMapDir) {
 
     std::string lBuff;
-    std::ifstream fileStream(buffer);
+    std::ifstream fileStream(szMapDir + ".ddata");
 
     if(!fileStream)
     {
@@ -132,14 +125,10 @@ void Level::LoadDoor(const std::string &szMapName) {
     fileStream.close();
 }
 
-void Level::LoadKey(const std::string &szMapName) {
-
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".kdata", sizeof(buffer));
+void Level::LoadKey(const std::string &szMapDir) {
 
     std::string lBuff;
-    std::ifstream fileStream(buffer);
+    std::ifstream fileStream(szMapDir + ".kdata");
 
     if(!fileStream)
     {
@@ -170,14 +159,10 @@ void Level::LoadKey(const std::string &szMapName) {
 
 }
 
-void Level::LoadSpikes(const std::string &szMapName) {
-
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".sdata", sizeof(buffer));
+void Level::LoadSpikes(const std::string &szMapDir) {
 
     std::string lBuff;
-    std::ifstream fileStream(buffer);
+    std::ifstream fileStream(szMapDir + ".sdata");
 
     if(!fileStream)
     {
@@ -208,10 +193,10 @@ void Level::LoadSpikes(const std::string &szMapName) {
     fileStream.close();
 }
 
-void Level::LoadSwitch(const std::string &szMapName) {
+void Level::LoadSwitch(const std::string &szMapDir) {
 
     std::string lBuff;
-    std::ifstream fileStream(szMapName + ".zdata");
+    std::ifstream fileStream(szMapDir + ".zdata");
 
     if (!fileStream) {
         return;
@@ -239,13 +224,11 @@ void Level::LoadSwitch(const std::string &szMapName) {
 
 }
 
-void Level::LoadTutKeys(const std::string &szMapName) {
-    char buffer[256];
-    strncpy(buffer, szMapName.c_str(), sizeof(buffer));
-    strncat(buffer, ".tdata", sizeof(buffer));
+void Level::LoadTutKeys(const std::string &szMapDir) {
+
 
     std::string lBuff;
-    std::ifstream fileStream(buffer);
+    std::ifstream fileStream(szMapDir + ".tdata");
     if(!fileStream)
         return;
 

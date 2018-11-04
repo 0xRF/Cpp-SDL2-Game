@@ -31,7 +31,6 @@ private:
 
     void Place();
 
-    Door* door = nullptr;
 
 };
 

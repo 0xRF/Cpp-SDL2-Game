@@ -21,15 +21,11 @@ static std::vector<std::string> savedMaps{};
 
 void LevelEditor::Update(const float &deltaTime) {
 
-    if (InputManager::KeyPressed(SDLK_o)) {
-        SaveMap("uTut");
-        return;
-    }
-
   if(InputManager::KeyDown(SDLK_TAB)){
       CycleEditorModes();
     }
 
+    if(currentLevelName != "")
   GetActiveMode()->OnUpdate();
 
     UpdateCamera(deltaTime);
@@ -37,13 +33,19 @@ void LevelEditor::Update(const float &deltaTime) {
 
 void LevelEditor::Render() {
 
+    static SDL2pp::Texture* playerTexture = Engine::LoadTexture("assets/Assassin-1.png");
+
+    std::pair<int,int> sp = Camera::Instance().WorldToScreenPoint(300,300);
+
+    UI::DrawTexture(playerTexture, {8,64,32,32}, sp.first,sp.second, 3.0f);
+
     ImGui::SetNextWindowSize(ImVec2(300, 300), 1 << 2);
     ImGui::Begin("Level Settings");
 
-    if (ImGui::BeginCombo("Current Mode", GetActiveMode()->modeName.c_str(), ImGuiComboFlags_None)) // The second parameter is the label previewed before opening the combo.
+    if (ImGui::BeginCombo("Current Mode", GetActiveMode()->modeName.c_str(),
+                          ImGuiComboFlags_None)) // The second parameter is the label previewed before opening the combo.
     {
-        for (int n = 0; n < editorModes.size(); n++)
-        {
+        for (int n = 0; n < editorModes.size(); n++) {
 
             bool is_selected = (n == activeMode);
             if (ImGui::Selectable(editorModes[modeIndex[n]]->modeName.c_str(), is_selected))
@@ -55,40 +57,39 @@ void LevelEditor::Render() {
     }
 
 
-    ImGui::Text(("Map "+ currentLevelName).c_str());
+    ImGui::Text(("Map " + currentLevelName).c_str());
 
-    if(currentLevelName != "")
-    {
-        if(ImGui::Button(currentLevelName.c_str()))
+    if (currentLevelName != "") {
+        if (ImGui::Button("Save"))
             SaveMap(currentLevelName.c_str());
     }
 
 
-    if(ImGui::CollapsingHeader("Maps")) {
+    if (ImGui::CollapsingHeader("Maps")) {
 
-        for(auto szMap : savedMaps)
+        for (auto szMap : savedMaps)
 
-            if(ImGui::Button(szMap.c_str())) {
+            if (ImGui::Button(szMap.c_str())) {
 
-                    this->colliderList.clear();
-                    this->doorPosition = {0, 0};
-                    this->keyPosition = {0, 0};
+                this->colliderList.clear();
+                this->doorPosition = {0, 0};
+                this->keyPosition = {0, 0};
 
-                    for (auto ent : worldTileList)
-                        ent->bDestroy = true;
-                    worldTileList.clear();
+                for (auto ent : worldTileList)
+                    ent->bDestroy = true;
+                worldTileList.clear();
 
-                    for (auto ent : worldSpikes)
-                        ent->bDestroy = true;
-                    worldSpikes.clear();
+                for (auto ent : worldSpikes)
+                    ent->bDestroy = true;
+                worldSpikes.clear();
 
-                    for (auto ent : allSwitches)
-                        ent->bDestroy = true;
-                    allSwitches.clear();
+                for (auto ent : allSwitches)
+                    ent->bDestroy = true;
+                allSwitches.clear();
 
-                    for (auto ent : mKeys)
-                        ent->bDestroy = true;
-                    mKeys.clear();
+                for (auto ent : mKeys)
+                    ent->bDestroy = true;
+                mKeys.clear();
 
                 LoadMap(szMap);
 
@@ -98,11 +99,12 @@ void LevelEditor::Render() {
 
     ImGui::Checkbox("Colldiers", &bAlwaysRenderColliders);
 
-    GetActiveMode()->OnRender();
+    if (currentLevelName != "")
+        GetActiveMode()->OnRender();
 
     ImGui::End();
 
-    if(ImGui::BeginMainMenuBar()) {
+    if (ImGui::BeginMainMenuBar()) {
         for (auto md : editorModes) {
             if (ImGui::Button(md.first.c_str())) {
                 SetEditorMode(md.first);
@@ -113,12 +115,14 @@ void LevelEditor::Render() {
     }
 
 
-    UI::DrawString(modeIndex[activeMode].c_str(), Camera::Instance().viewport.w/2, 50, 3, {0,255,99});
+    UI::DrawString(modeIndex[activeMode].c_str(), Camera::Instance().viewport.w / 2, 50, 3, {0, 255, 99});
 
-    RenderColliders();
+    if (currentLevelName != "") {
+        RenderColliders();
 
-    for (auto md : editorModes)
-        md.second->ForceRender();
+        for (auto md : editorModes)
+            md.second->ForceRender();
+    }
 }
 
 

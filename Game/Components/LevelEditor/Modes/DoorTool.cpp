@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include "../../../Entities/Door.hpp"
+#include "../../../../Engine/Engine.hpp"
 void DoorTool::OnUpdate() {
     auto mousePos = InputManager::GetMousePos();
     mousePos = SnapToGrid(mousePos, 64);
@@ -76,10 +77,6 @@ void DoorTool::OnLoad(const std::string& szMapDir) {
     }
 
     fileStream.close();
-    if (pEditor->doorPosition.first != -1) {
-        door = new Door();
-        door->position = {pEditor->doorPosition.first, pEditor->doorPosition.second};
-    }
 }
 
 DoorTool::DoorTool(LevelEditor *_pEditor) : pEditor(_pEditor) {
@@ -88,14 +85,14 @@ DoorTool::DoorTool(LevelEditor *_pEditor) : pEditor(_pEditor) {
 
 void DoorTool::Place() {
 
-    if(!door)
-        door = new Door();
-
-    auto wpos = SnapToGrid(Camera::Instance().ScreenToWorldPoint(SnapToGrid(InputManager::GetMousePos(),64)),64 );
-    pEditor->doorPosition = std::pair<int,int>{(int)wpos.x, (int)wpos.y};
-    door->position = {pEditor->doorPosition.first, pEditor->doorPosition.second};
-}
+    auto wpos = SnapToGrid(Camera::Instance().ScreenToWorldPoint(SnapToGrid(InputManager::GetMousePos(), 64)), 64);
+    pEditor->doorPosition = std::pair<int, int>{(int) wpos.x, (int) wpos.y};
+};
 
 void DoorTool::ForceRender() {
     auto sp = (Camera::Instance().WorldToScreenPoint(pEditor->doorPosition));
+
+    static SDL2pp::Texture* pTexture = Engine::LoadTexture("assets/duntiles.png");
+
+UI::DrawTexture(pTexture, {0,0, 32, 64}, pEditor->doorPosition.first, pEditor->doorPosition.second, 2);
 }

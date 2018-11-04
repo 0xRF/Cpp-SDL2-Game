@@ -48,8 +48,10 @@ void MainMenu::Render() {
 
 
 void loadMap(const std::string map){
+    std::cout << map << " wtf dennis \n";
+    GameManager::Instance()->pCurrentLevel = Level::LoadLevel(map);
     auto pPlayer = new Player;
-    GameManager::Instance()->pCurrentLevel = Level::LoadLevel("uLevel");
+    playClosed = true;
 }
 
 void MainMenu::Start() {
@@ -74,7 +76,7 @@ void MainMenu::Start() {
 
             int* yPos = new int;
             mapButtonOffsets.push_back({yPos, 180 + index*60});
-            std::function<void()> aa = std::bind(&loadMap, lBuff);
+            std::function<void()> aa = std::bind(&loadMap, lBuff + "/map");
 
             auto play = new Button(lBuff.c_str(), aa, {&bpX, yPos}, &playClosed, 2);
             index++;

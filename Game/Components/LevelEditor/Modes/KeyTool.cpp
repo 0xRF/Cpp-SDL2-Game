@@ -35,9 +35,6 @@ void KeyTool::OnUpdate() {
         wpos = SnapToGrid(wpos,64);
         mpos = {(int)wpos.x, (int)wpos.y};
         pEditor->keyPosition = mpos;
-
-        if(pKey)
-            pKey->position = {mpos.first, mpos.second};
     }
 }
 
@@ -91,8 +88,8 @@ void KeyTool::OnLoad(const std::string& szMapDir) {
     fileStream.close();
 
     if(pEditor->keyPosition.first != -1) {
-        pKey = new Key();
-        pKey->position = {pEditor->keyPosition.first, pEditor->keyPosition.second};
+    //    pKey = new Key();
+     //   pKey->position = {pEditor->keyPosition.first, pEditor->keyPosition.second};
     }
 }
 
@@ -101,6 +98,8 @@ KeyTool::KeyTool(LevelEditor *_pEditor) : pEditor(_pEditor){}
 
 
 void KeyTool::ForceRender() {
-    if(pTexure)
-    UI::DrawTexture(pTexure, pEditor->keyPosition.first, pEditor->keyPosition.second, 1.0f);
+    if (pTexure) {
+        auto pos = Camera::Instance().WorldToScreenPoint(pEditor->keyPosition.first, pEditor->keyPosition.second);
+        UI::DrawTexture(pTexure, pos.first, pos.second, 1.0f);
+    }
 }

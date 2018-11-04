@@ -27,9 +27,9 @@ void PlayerController::Render() {
    for(int i = 0; i < 3; i++){
 
        if(i <= localPlayer->lives)
-       UI::DrawTexture(heart, 1280 - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
+       UI::DrawTexture(heart, Camera::Instance().viewport.w - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
         else
-           UI::DrawTexture(nheart, 1280 - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
+           UI::DrawTexture(nheart, Camera::Instance().viewport.w - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
    }
 
     Camera::Instance().viewport.x = static_cast<int>(localPlayer->position.x) - 640 - 44;

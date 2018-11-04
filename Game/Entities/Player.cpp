@@ -82,7 +82,7 @@ bool Player::Collides(SDL2pp::Rect* pHit) {
 
 std::vector<SDL2pp::Rect> Player::GetCollisions(const float& deltaTime) {
 
-    static std::vector<Collider *> *allColls = &GameManager::Instance()->pCurrentLevel->worldColliders;
+    std::vector<Collider *>* allColls = &GameManager::Instance()->pCurrentLevel->worldColliders;
 
 
 

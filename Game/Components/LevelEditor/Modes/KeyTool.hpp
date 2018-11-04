@@ -27,6 +27,5 @@ public:
 
 private:
     LevelEditor* pEditor = nullptr;
-private: Key* pKey = nullptr;
 
 };
