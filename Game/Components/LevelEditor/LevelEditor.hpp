@@ -7,9 +7,11 @@
 
 #include <map>
 
+class Switch;
 class Empty;
 class EditorMode;
 class Spike;
+class TutKey;
 class LevelEditor : public Component<LevelEditor>{
 
 public:
@@ -31,6 +33,9 @@ public:
     std::vector<Empty*> worldTileList{};
     std::pair<int,int> doorPosition = {-1,-1};
     std::pair<int,int> keyPosition = {-1,-1};
+    std::vector<TutKey*> mKeys{};
+    std::vector<Switch*> allSwitches{};
+
 
 	LevelEditor(){}
 	void SetEditorMode(const std::string& mode);
@@ -64,5 +69,6 @@ private:
 
 
     bool bAlwaysRenderColliders = false;
+	std::string currentLevelName = "";
 };
 

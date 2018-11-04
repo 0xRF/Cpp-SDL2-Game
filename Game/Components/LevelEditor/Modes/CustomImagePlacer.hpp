@@ -29,7 +29,7 @@ public:
 private:
     LevelEditor* pEditor = nullptr;
 
-    std::vector<TutKey*> mKeys{};
+
     void PlaceKey();
 
 };

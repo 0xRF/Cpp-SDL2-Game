@@ -30,8 +30,6 @@ public:
 private:
     LevelEditor* pEditor = nullptr;
 
-    std::vector<Switch*> allSwitches{};
-
     Switch* activeSwitch = nullptr;
 
     bool bEditSelection = false;

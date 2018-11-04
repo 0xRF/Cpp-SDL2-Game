@@ -12,14 +12,19 @@
 #include "../../../../Engine/Engine.hpp"
 #include "../../../../Engine/UI.hpp"
 #include "../../../Entities/Key.hpp"
+
+static SDL2pp::Texture* pTexure = nullptr;
+
+
 void KeyTool::OnRender() {
 
     auto mpos = SnapToGrid(InputManager::GetMousePos(), 64);
 
-    static SDL2pp::Texture* pTexure = Engine::LoadTexture("assets/kagari.png");
+    if (pTexure) {
 
-    UI::DrawTexture(pTexure,mpos.first, mpos.second, 1.0f);
-    UI::DrawRect(mpos.first,mpos.second, 64,64, {255,0,0}, 2);
+        UI::DrawTexture(pTexure, mpos.first, mpos.second, 1.0f);
+        UI::DrawRect(mpos.first, mpos.second, 64, 64, {255, 0, 0}, 2);
+    }
 }
 
 void KeyTool::OnUpdate() {
@@ -57,6 +62,7 @@ void KeyTool::OnSave(const std::string& szMapDir) {
 
 void KeyTool::OnLoad(const std::string& szMapDir) {
 
+    pTexure =  Engine::LoadTexture("assets/kagari.png");
     std::string lBuff;
     std::ifstream fileStream(szMapDir + ".kdata");
 
@@ -95,5 +101,6 @@ KeyTool::KeyTool(LevelEditor *_pEditor) : pEditor(_pEditor){}
 
 
 void KeyTool::ForceRender() {
-
+    if(pTexure)
+    UI::DrawTexture(pTexure, pEditor->keyPosition.first, pEditor->keyPosition.second, 1.0f);
 }

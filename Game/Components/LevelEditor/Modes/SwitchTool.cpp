@@ -79,15 +79,15 @@ void SwitchTool::OnRender() {
 
 
         auto swit = new Switch({0,0,0,0});
-        allSwitches.push_back(swit);
+        pEditor->allSwitches.push_back(swit);
         swit->position = Camera::Instance().ScreenToWorldPoint(1280/2, 720/2);
         activeSwitch = swit;
     }
 
-    auto it = allSwitches.begin();
+    auto it = pEditor->allSwitches.begin();
 
 int id = 0;
-    while(it != allSwitches.end()) {
+    while(it != pEditor->allSwitches.end()) {
 
 
         if (activeSwitch == (*it)) {
@@ -117,7 +117,7 @@ int id = 0;
 
             if(ImGui::Button(("Remove" + std::to_string(id)).c_str())) {
                 (*it)->bDestroy = true;
-                it = allSwitches.erase(it);
+                it = pEditor->allSwitches.erase(it);
                 activeSwitch = nullptr;
                 break;
             }
@@ -160,7 +160,7 @@ void SwitchTool::OnSave(const std::string& szMapDir) {
 
     std::ofstream fSaveMap(szMapDir + ".zdata",  std::ofstream::out);
 
-    for(auto swi : allSwitches){
+    for(auto swi : pEditor->allSwitches){
         fSaveMap << (int)swi->position.x << ' ' << (int)swi->position.y  <<  swi->toggleZone.x << ' ' <<  swi->toggleZone.y << ' '<<  swi->toggleZone.w << ' ' <<  swi->toggleZone.h << '\n';
     }
 
@@ -199,7 +199,7 @@ void SwitchTool::OnLoad(const std::string& szMapDir) {
 
         auto str = new Switch({data[2], data[3], data[4], data[5]});
         str->position = pos;
-        allSwitches.push_back(str);
+        pEditor->allSwitches.push_back(str);
     }
 
     fileStream.close();

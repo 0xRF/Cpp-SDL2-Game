@@ -21,8 +21,8 @@ void CustomImagePlacer::OnUpdate() {
     if(InputManager::MouseClicked(SDL_BUTTON_RIGHT)) {
         auto mpos = InputManager::GetMousePos();
         auto wpos = Camera::Instance().ScreenToWorldPoint(mpos);
-        auto it = mKeys.begin();
-        while (it != mKeys.end()) {
+        auto it = pEditor->mKeys.begin();
+        while (it != pEditor->mKeys.end()) {
 
             auto rect = (*it)->GetComponent<ImageRenderer>()->srcrect;
             rect.x = (int)(*it)->position.x;
@@ -30,7 +30,7 @@ void CustomImagePlacer::OnUpdate() {
 
             if (rect.Contains(wpos.x, wpos.y)) {
                 (*it)->bDestroy = true;
-                it = mKeys.erase(it);
+                it = pEditor->mKeys.erase(it);
             }
             else
                 it++;
@@ -62,9 +62,9 @@ void CustomImagePlacer::OnRender() {
 
         auto mpos = InputManager::GetMousePos();
         auto wpos = Camera::Instance().ScreenToWorldPoint(mpos);
-        auto it = mKeys.begin();
+        auto it = pEditor->mKeys.begin();
 
-        for(auto sKey : mKeys){
+        for(auto sKey : pEditor->mKeys){
 
             auto rect = sKey->GetComponent<ImageRenderer>()->srcrect;
             rect.y = (int) sKey->position.y;
@@ -91,11 +91,11 @@ void CustomImagePlacer::OnDisable() {
 void CustomImagePlacer::OnSave(const std::string& szMapDir) {
 
     std::ofstream fileStream(szMapDir + ".tdata",  std::ofstream::out);
-    for(auto key : mKeys) {
+    for(auto key : pEditor->mKeys) {
         fileStream << key->key << ' ' << (int)key->position.x << ' ' << (int)key->position.y << '\n';
     }
     fileStream.close();
-    std::cout << "Finished Saving TutKeys: " << mKeys.size() << std::endl;
+    std::cout << "Finished Saving TutKeys: " << pEditor->mKeys.size() << std::endl;
 }
 
 CustomImagePlacer::CustomImagePlacer(LevelEditor *_pEditor) : pEditor(_pEditor) {
@@ -140,7 +140,7 @@ void CustomImagePlacer::OnLoad(const std::string& szMapDir) {
         pKey->position.x = x;
         pKey->position.y = y;
 
-        mKeys.push_back(pKey);
+        pEditor->mKeys.push_back(pKey);
 
     }
     fileStream.close();
@@ -160,7 +160,7 @@ void CustomImagePlacer::PlaceKey() {
         ch = 'm';
 
    auto tkey = new TutKey(ch);
-   mKeys.push_back(tkey);
+   pEditor->mKeys.push_back(tkey);
 
    auto mpos = InputManager::GetMousePos();
    auto wpo = Camera::Instance().ScreenToWorldPoint(mpos);

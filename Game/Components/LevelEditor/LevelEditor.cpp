@@ -13,6 +13,11 @@
 #include "../../../Engine/Camera.hpp"
 #include "../../../Engine/Button.hpp"
 #include "../../../imgui/imgui.h"
+#include "../../Entities/Spike.hpp"
+#include "../../Entities/TutKey.hpp"
+#include "../../Entities/Switch.hpp"
+static std::vector<std::string> savedMaps{};
+
 
 void LevelEditor::Update(const float &deltaTime) {
 
@@ -50,17 +55,52 @@ void LevelEditor::Render() {
     }
 
 
-    static char buf1[64] = "";
-    ImGui::InputText("Map Name", buf1, 64);
+    ImGui::Text(("Map "+ currentLevelName).c_str());
 
-    if(buf1 != "")
+    if(currentLevelName != "")
     {
-        if(ImGui::Button("Save"))
-            SaveMap(buf1);
-
-        if(ImGui::Button("Load"))
-        LoadMap(buf1);
+        if(ImGui::Button(currentLevelName.c_str()))
+            SaveMap(currentLevelName.c_str());
     }
+
+
+    if(ImGui::CollapsingHeader("Maps")) {
+
+        for(auto szMap : savedMaps)
+
+            if(ImGui::Button(szMap.c_str())) {
+                if(szMap != currentLevelName) {
+
+                    this->colliderList.clear();
+                    this->doorPosition = {0, 0};
+                    this->keyPosition = {0, 0};
+
+                    for (auto ent : worldTileList)
+                        ent->bDestroy = true;
+                    worldTileList.clear();
+
+                    for (auto ent : worldSpikes)
+                        ent->bDestroy = true;
+                    worldSpikes.clear();
+
+                    for (auto ent : allSwitches)
+                        ent->bDestroy = true;
+                    allSwitches.clear();
+
+                    for (auto ent : mKeys)
+                        ent->bDestroy = true;
+                    mKeys.clear();
+
+
+                }
+                else
+                    continue;
+
+                LoadMap(szMap);
+
+            }
+    }
+
 
     ImGui::Checkbox("Colldiers", &bAlwaysRenderColliders);
 
@@ -82,6 +122,9 @@ void LevelEditor::Render() {
     UI::DrawString(modeIndex[activeMode].c_str(), Camera::Instance().viewport.w/2, 50, 3, {0,255,99});
 
     RenderColliders();
+
+    for (auto md : editorModes)
+        md.second->ForceRender();
 }
 
 
@@ -112,6 +155,12 @@ void LevelEditor::Start() {
     editorModes["switch"] = new SwitchTool(this);
     for(auto md : editorModes){md.second->modeName =md.first; }
 
+    std::ifstream fileStream("alllevels");
+    std::string lBuff;
+    while (std::getline(fileStream, lBuff)) {
+        savedMaps.push_back(lBuff);
+    }
+    fileStream.close();
 
 
 
@@ -229,6 +278,8 @@ void LevelEditor::SaveMap(const std::string& szFileName) {
 
 void LevelEditor::LoadMap(const std::string& szMapDir){
 
+    currentLevelName = szMapDir;
+
     std::ifstream fileStream(szMapDir + ".mdata");
     std::string lBuff;
     while(std::getline(fileStream, lBuff))
@@ -261,7 +312,7 @@ void LevelEditor::LoadMap(const std::string& szMapDir){
         mode.second->OnLoad(szMapDir);
 
 
-    std::cout << "Finished loading map: " <<  std::endl;
+    std::cout << "Finished loading map: " << currentLevelName <<  std::endl;
 }
 
 void LevelEditor::UpdateCamera(const float &deltaTime) {
