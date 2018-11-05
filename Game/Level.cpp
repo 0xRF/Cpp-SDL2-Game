@@ -22,7 +22,6 @@ Level* Level::LoadLevel(const std::string &szMap) {
 
     if(!fileStream)
     {
-        std::cout << "what the fucking dennis\n";
         return nullptr;
     }
 

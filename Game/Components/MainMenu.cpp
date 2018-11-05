@@ -115,7 +115,6 @@ void MainMenu::OnGameEnd(bool bWon) {
 
     bEndMenuClosed = false;
 
-
     std::function<void(void)> fQuit = [&](){
         Engine::Stop();
     };
@@ -142,5 +141,6 @@ void MainMenu::OnGameEnd(bool bWon) {
 
 
     }
+
 
 }
