@@ -71,6 +71,7 @@ void DoorTool::OnLoad(const std::string& szMapDir) {
         }
 
         int x = data[0];
+
         int y = data[1];
 
         pEditor->doorPosition = {x, y};
@@ -94,5 +95,5 @@ void DoorTool::ForceRender() {
 
     static SDL2pp::Texture* pTexture = Engine::LoadTexture("assets/duntiles.png");
 
-UI::DrawTexture(pTexture, {0,0, 32, 64}, pEditor->doorPosition.first, pEditor->doorPosition.second, 2);
+UI::DrawTexture(pTexture, {0,0, 32, 64}, sp.first, sp.second, 2);
 }
