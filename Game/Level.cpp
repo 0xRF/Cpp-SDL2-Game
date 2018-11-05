@@ -202,7 +202,6 @@ void Level::LoadSwitch(const std::string &szMapDir) {
         return;
     }
 
-
     while (std::getline(fileStream, lBuff)) {
         std::stringstream line(lBuff);
         std::string buff;

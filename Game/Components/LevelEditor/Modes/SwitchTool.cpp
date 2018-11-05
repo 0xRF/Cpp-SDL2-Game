@@ -161,7 +161,7 @@ void SwitchTool::OnSave(const std::string& szMapDir) {
     std::ofstream fSaveMap(szMapDir + ".zdata",  std::ofstream::out);
 
     for(auto swi : pEditor->allSwitches){
-        fSaveMap << (int)swi->position.x << ' ' << (int)swi->position.y  <<  swi->toggleZone.x << ' ' <<  swi->toggleZone.y << ' '<<  swi->toggleZone.w << ' ' <<  swi->toggleZone.h << '\n';
+        fSaveMap << (int)swi->position.x << ' ' << (int)swi->position.y  << ' ' <<  swi->toggleZone.x << ' ' <<  swi->toggleZone.y << ' ' <<  swi->toggleZone.w << ' ' <<  swi->toggleZone.h << '\n';
     }
 
     std::cout << "Finished Switch" << std::endl;

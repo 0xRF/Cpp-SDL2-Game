@@ -15,7 +15,7 @@ void Collider::Update(const float &deltaTime) {
 void Collider::Render() {
    auto a = Camera::Instance().WorldToScreenPoint(entity->position);
 
-   UI::DrawRect(a.first, a.second, static_cast<int>(GetBounds().w), static_cast<int>(GetBounds().h), {0,0,255},5);
+  // UI::DrawRect(a.first, a.second, static_cast<int>(GetBounds().w), static_cast<int>(GetBounds().h), {0,0,255},5);
 
 
 
