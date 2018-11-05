@@ -32,6 +32,8 @@ public:
     virtual void Start() = 0;
 
     virtual void OnDestroy() = 0;
+
+    virtual ~BaseComponent(){}
 };
 
 template <typename T>

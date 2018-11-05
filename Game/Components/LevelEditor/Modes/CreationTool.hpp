@@ -9,10 +9,10 @@ class Empty;
 class CreationTool : public EditorMode {
 
 public:
-    void OnUpdate();
-    void OnRender();
-    void OnDisable();
-    void OnActivate();
+    void OnUpdate() override ;
+    void OnRender() override ;
+    void OnDisable() override ;
+    void OnActivate() override ;
     void OnSave(const std::string& szMapDir) override;
 
     void OnLoad(const std::string& szMapDir) override;

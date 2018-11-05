@@ -8,10 +8,10 @@ class Empty;
 class SelectionTool : public EditorMode {
 
 public:
-  void OnUpdate();
-  void OnRender();
-  void OnDisable();
-  void OnActivate();
+  void OnUpdate() override ;
+  void OnRender() override ;
+  void OnDisable() override ;
+  void OnActivate() override ;
 
     void OnSave(const std::string& szMapDir) override;
 

@@ -69,6 +69,8 @@ public:
     }
 
 
+
+    virtual ~BaseEntity(){};
 };
 
 template <typename T>

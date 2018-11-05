@@ -21,6 +21,9 @@
 #include "../imgui_sdl.h"
 #include "../imgui/imgui.h"
 #include "../imgui/examples/imgui_impl_sdl.h"
+#include "../Game/Entities/GameManager.hpp"
+#include "../imgui/imgui.h"
+
 
 static Engine* _engine;
 
@@ -35,29 +38,33 @@ const bool Engine::Start()
 {
     _engine = new Engine;
 
+
+    //init all the sdl features required
    _SDL_   = new SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
    _IMAGE_ = new SDL2pp::SDLImage(IMG_INIT_PNG | IMG_INIT_JPG);
    _TTF_   = new SDL2pp::SDLTTF();
 
 
-
+//if any of them failed, dont start the game..
     if(!_SDL_ || !_IMAGE_ || !_TTF_)return false;
 
+    //I dont know why i made it an object, but yea
     _engine->inputManager = new InputManager;
 
-    _engine->g_pWindow = new SDL2pp::Window("B-Rampage", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _engine->windowRect.w, _engine->windowRect.h,  SDL_WINDOW_RESIZABLE |SDL_WINDOW_ALLOW_HIGHDPI);
+    //create and set the sdl2 window
+    _engine->g_pWindow = new SDL2pp::Window("Memegeon", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _engine->windowRect.w, _engine->windowRect.h,  SDL_WINDOW_RESIZABLE |SDL_WINDOW_ALLOW_HIGHDPI);
 
 
     //SDL_GL_MakeCurrent(_engine->g_pWindow->Get(), nullptr);
-
+//Create the sdl2 renderer which draws textures to our window
     _engine->g_pRenderer = new SDL2pp::Renderer(*_engine->g_pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-
+    //Initilazeing the imgui implementation for the level editor
     ImGui::CreateContext();
     ImGuiSDL::Initialize(_engine->g_pRenderer->Get(), 1280, 720);
     ImGui_ImplSDL2_Init(_engine->g_pWindow->Get());
 
-
+    //init some ui things, eg loading the font
     UI::Start();
    // p_tRender = SDL_CreateThread(RenderThread, "t_Render", (void*)NULL);
 
@@ -98,9 +105,8 @@ int Engine::RenderThread(void* data){
 }
 
 
+//this was left in from when the rendering of the game and the update loop were seperated
 void Engine::Render() {
-
-
 
     while(!bShutdown) {
 
@@ -119,8 +125,6 @@ void Engine::Render() {
     }
 }
 
-#include "../Game/Entities/GameManager.hpp"
-#include "../imgui/imgui.h"
 
 void Engine::Update() {
 
@@ -161,6 +165,8 @@ void Engine::Update() {
 
               Camera::Instance().viewport.w = event.window.data1;
               Camera::Instance().viewport.h = event.window.data2;
+              io.DisplaySize.x = static_cast<float>(event.window.data1);
+              io.DisplaySize.y = static_cast<float>(event.window.data2);
           }
           else if (event.type == SDL_WINDOWEVENT)
           {
@@ -298,24 +304,29 @@ void Engine::Update() {
 
 SDL2pp::Texture* Engine::LoadTexture(const char* szFileName){
 
+    //rather than loading the same texture in to memory twice, keep track of them this
     static auto pMap = new std::map<const char *, SDL2pp::Texture *>();
 
+    //if there is a texture of the same file
     if(pMap->count(szFileName)) {
       //  std::cout << "Texture already exists\n";
+        //return it..
         return (*pMap)[szFileName];
     }
+    //else set the value of the texture ptr at szfilename to a new texture loading
     (*pMap)[szFileName] = new SDL2pp::Texture(*Engine::Instance().g_pRenderer, szFileName);
 
-    std::cout <<  IMG_GetError << std::endl;
+    std::cout  << "IMG ERR " << IMG_GetError() << std::endl;
 
+    //return it.
     return (*pMap)[szFileName];
-
 }
 
 void Engine::AddEntity(BaseEntity *pEnt) {
     entToAdd.push_back(pEnt);
 }
 
+//find entity of given type, probs never gonna use it tho.
 BaseEntity* Engine::FindObjectOfType(const std::size_t &id) {
 
     for(auto pEnt : Engine::Instance().entityList) {
