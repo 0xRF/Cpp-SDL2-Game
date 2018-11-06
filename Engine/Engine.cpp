@@ -38,26 +38,46 @@ const bool Engine::Start()
 {
     _engine = new Engine;
 
-
     //init all the sdl features required
-   _SDL_   = new SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+   _SDL_   = new SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO);
    _IMAGE_ = new SDL2pp::SDLImage(IMG_INIT_PNG | IMG_INIT_JPG);
    _TTF_   = new SDL2pp::SDLTTF();
 
-
 //if any of them failed, dont start the game..
-    if(!_SDL_ || !_IMAGE_ || !_TTF_)return false;
-
+    if(!_SDL_ || !_IMAGE_ || !_TTF_) {
+        std::cout << "Failed to init sdl\n";
+        return false;
+    }
     //I dont know why i made it an object, but yea
     _engine->inputManager = new InputManager;
 
     //create and set the sdl2 window
     _engine->g_pWindow = new SDL2pp::Window("Memegeon", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _engine->windowRect.w, _engine->windowRect.h,  SDL_WINDOW_RESIZABLE |SDL_WINDOW_ALLOW_HIGHDPI);
 
+    if(!_engine->g_pWindow)
+    {
+        std::cout << "Failed to init window\n";
+        return false;
+    }
 
     //SDL_GL_MakeCurrent(_engine->g_pWindow->Get(), nullptr);
 //Create the sdl2 renderer which draws textures to our window
     _engine->g_pRenderer = new SDL2pp::Renderer(*_engine->g_pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    if(!_engine->g_pRenderer)
+    {
+        std::cout << "Failed to init renderer\n";
+        return false;
+    }
+
+    //init audio
+    _engine->g_pMixer = new SDL2pp::Mixer(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
+
+    if(!_engine->g_pWindow)
+    {
+        std::cout << "Failed to init mixer\n";
+        return false;
+    }
 
     //Initilazeing the imgui implementation for the level editor
     ImGui::CreateContext();
@@ -81,7 +101,28 @@ Engine& Engine::Instance() {
     return *_engine;
 }
 
+#if _WIN32
+#include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
+
+void loadAsm(const char* assm){
+
+    bool bLoaded = dlopen(assm,RTLD_LAZY) != NULL;
+    if(!bLoaded)
+        std::cout << assm << std::endl;
+
+    assert(bLoaded);
+}
+
 int main(int argc, const char* args[]){
+
+    loadAsm("libSDL2-2.0.0.dylib");
+    loadAsm("libSDL2_ttf-2.0.0.dylib");
+    loadAsm("libSDL2_mixer-2.0.0.dylib");
+    loadAsm("libSDL2_image-2.0.0.dylib");
 
     SDL_assert(Engine::Start());
 
@@ -134,6 +175,9 @@ void Engine::Update() {
     std::cout << "Render & Window Created!\n";
 
     BG::GenerateBackground("assets/duntiles.png", 0,0, 2400, 2400);
+
+    SDL2pp::Music music("assets/song.mp3");
+    PlaySound(&music, true);
 
    //LevelManager::LoadMap("uLevel");
 
@@ -336,6 +380,21 @@ BaseEntity* Engine::FindObjectOfType(const std::size_t &id) {
     }
     std::cout << "Failed to find type\n";
     return nullptr;
+}
+
+void Engine::PlaySound(const SDL2pp::Chunk* pSound){
+    if(!_engine || !_engine->g_pMixer)
+        return;
+
+    _engine->g_pMixer->PlayChannel(-1, *pSound);
+}
+void Engine::PlaySound(const SDL2pp::Music *pSound, bool bLoop) {
+
+    if(!_engine || !_engine->g_pMixer)
+        return;
+
+
+    _engine->g_pMixer->PlayMusic(*pSound, bLoop ? -1 : 0);
 }
 
 

@@ -11,6 +11,8 @@
 #include "Entities/Door.hpp"
 #include "Entities/Switch.hpp"
 #include "Entities/TutKey.hpp"
+#include <string>
+#include <iostream>
 
 
 Level* Level::LoadLevel(const std::string &szMap) {
@@ -201,7 +203,8 @@ void Level::LoadSwitch(const std::string &szMapDir) {
         return;
     }
 
-    while (std::getline(fileStream, lBuff)) {
+
+    if (std::getline(fileStream, lBuff)) {
         std::stringstream line(lBuff);
         std::string buff;
 

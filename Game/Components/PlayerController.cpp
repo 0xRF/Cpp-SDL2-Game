@@ -25,8 +25,7 @@ void PlayerController::Render() {
    static SDL2pp::Texture* heart = Engine::LoadTexture("assets/heart.png");
     static SDL2pp::Texture* nheart = Engine::LoadTexture("assets/nheart.png");
    for(int i = 0; i < 3; i++){
-
-       if(i <= localPlayer->lives)
+       if(i < localPlayer->lives)
        UI::DrawTexture(heart, Camera::Instance().viewport.w - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
         else
            UI::DrawTexture(nheart, Camera::Instance().viewport.w - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);

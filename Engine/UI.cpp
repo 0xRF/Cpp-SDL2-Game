@@ -192,6 +192,12 @@ namespace UI {
 
         for(auto button : vButtons){
 
+            if(!button)
+                continue;
+
+            if(button->pbDisabled == nullptr)
+                continue;
+
             if(*button->pbDisabled)
                 continue;
 

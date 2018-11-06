@@ -184,7 +184,7 @@ void SwitchTool::OnLoad(const std::string& szMapDir) {
     }
 
 
-    while (std::getline(fileStream, lBuff)) {
+    if (std::getline(fileStream, lBuff)) {
         std::stringstream line(lBuff);
         std::string buff;
 

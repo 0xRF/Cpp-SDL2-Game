@@ -133,9 +133,7 @@ std::vector<SDL2pp::Rect> Player::GetCollisions(const float& deltaTime) {
 
             if ((*it)->entity->ID() == Spike::EID())
                 HurtMe();
-
-
-            if ((*it)->entity->ID() == Key::EID() && !GameManager::Instance()->bGrabbedKey) {
+            else if ((*it)->entity->ID() == Key::EID() && !GameManager::Instance()->bGrabbedKey) {
                 GameManager::Instance()->bGrabbedKey = true;
                 (*it)->entity->bDestroy = true;
                 it = allColls->erase(it);
@@ -144,9 +142,8 @@ std::vector<SDL2pp::Rect> Player::GetCollisions(const float& deltaTime) {
             } else if ((*it)->entity->ID() == Door::EID()) {
                 if (GameManager::Instance()->bGrabbedKey) {
                     //Level complete
-                 GameManager::Instance()->GameEnd(true);
+                    GameManager::Instance()->GameEnd(true);
                 }
-
             }
             else {
                 ret.push_back((*it)->GetBounds());
@@ -174,6 +171,9 @@ SDL2pp::Rect Player::GetBounds() {
 
 void Player::HurtMe() {
 
+    static SDL2pp::Chunk* pSound = new SDL2pp::Chunk("assets/hurt.mp3");
+Engine::PlaySound(pSound);
+
     lives--;
 
     if(lives == 0){
@@ -181,8 +181,10 @@ void Player::HurtMe() {
 
     } else {
 
+        velocity = {-velocity.x, -velocity.y};
+
      //Restart level
-        position = {300.0f, -50.0f};
+       // position = {300.0f, -50.0f};
     }
 
 }

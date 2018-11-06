@@ -30,9 +30,11 @@ public:
 
     SDL2pp::Window* g_pWindow  = nullptr;
     SDL2pp::Renderer* g_pRenderer = nullptr;
+    SDL2pp::Mixer* g_pMixer = nullptr;
     std::vector<BaseEntity*> entityList = std::vector<BaseEntity*>();
 
-
+    static void PlaySound(const SDL2pp::Chunk* pSound);
+    static void PlaySound(const SDL2pp::Music* pSound, bool bLoop = false);
     static void AddEntity(BaseEntity* pEnt);
 
 private:
