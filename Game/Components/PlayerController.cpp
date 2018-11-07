@@ -31,8 +31,8 @@ void PlayerController::Render() {
            UI::DrawTexture(nheart, Camera::Instance().viewport.w - 40 - (heart->GetWidth()*2) - ((heart->GetWidth()*2) * i + i*6), 40, 2.0f);
    }
 
-    Camera::Instance().viewport.x = static_cast<int>(localPlayer->position.x) - 640 - 44;
-    Camera::Instance().viewport.y = static_cast<int>(localPlayer->position.y) - 360  - 22;
+    Camera::Instance().viewport.x = static_cast<int>(localPlayer->position.x) - Camera::Instance().viewport.w/2 - 44;
+    Camera::Instance().viewport.y = static_cast<int>(localPlayer->position.y) - Camera::Instance().viewport.h/2  - 22;
 
 }
 

@@ -24,7 +24,12 @@
 #include "../Game/Entities/GameManager.hpp"
 #include "../imgui/imgui.h"
 
-
+/*
+#import "SDL2_image/SDL_image.h"
+#import "SDL2/SDL.h"
+#import "SDL2_mixer/SDL_mixer.h"
+#import "SDL2_ttf/SDL_ttf.h"
+*/
 static Engine* _engine;
 
 static SDL2pp::SDL* _SDL_;
@@ -59,6 +64,7 @@ const bool Engine::Start()
         std::cout << "Failed to init window\n";
         return false;
     }
+
 
     //SDL_GL_MakeCurrent(_engine->g_pWindow->Get(), nullptr);
 //Create the sdl2 renderer which draws textures to our window
@@ -105,24 +111,50 @@ Engine& Engine::Instance() {
 #include <Windows.h>
 #else
 #include <dlfcn.h>
+#include <unistd.h>
+
 #endif
 
 
 void loadAsm(const char* assm){
 
-    bool bLoaded = dlopen(assm,RTLD_LAZY) != NULL;
-    if(!bLoaded)
-        std::cout << assm << std::endl;
-
-    assert(bLoaded);
+    bool bLoaded = dlopen(assm, RTLD_GLOBAL) != NULL;
+    if(!bLoaded) {
+        std::cout << "Failed to load " << assm << std::endl;
+        std::cin.get();
+        exit(-1);
+    }
 }
 
+const char* libraries[] = {
+        "libSDL2-2.0.0.dylib",
+        "libSDL2_image-2.0.0.dylib",
+        "libSDL2_mixer-2.0.0.dylib",
+        "libSDL2_ttf-2.0.0.dylib",
+        "libfreetype.6.dylib",
+        "libjpeg.9.dylib",
+        "libmodplug.1.dylib",
+        "libpng16.16.dylib",
+        "libSystem.B.dylib",
+        "libtiff.5.dylib",
+        "libtiffxx.5.dylib",
+        "libvorbisfile.3.dylib",
+        "libwebp.7.dylib",
+        "libwebpdecoder.3.dylib",
+        "libwebpdemux.2.dylib",
+        "libwebpmux.3.dylib"
+}; //16 libs
 int main(int argc, const char* args[]){
 
-    loadAsm("libSDL2-2.0.0.dylib");
-    loadAsm("libSDL2_ttf-2.0.0.dylib");
-    loadAsm("libSDL2_mixer-2.0.0.dylib");
-    loadAsm("libSDL2_image-2.0.0.dylib");
+    std::string meme(args[0]);
+    chdir(meme.substr(0, meme.size() - 8).c_str());
+
+
+    std::cout << "Loading dependencies\n";
+
+    for(int i = 0; i <16; i++){
+   //     loadAsm(("libs/" + std::string(libraries[i])).c_str());
+    }
 
     SDL_assert(Engine::Start());
 
