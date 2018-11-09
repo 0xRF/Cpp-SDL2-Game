@@ -79,7 +79,8 @@ void MainMenu::Start() {
             mapButtonOffsets.push_back({yPos, 180 + index*60});
             std::function<void()> aa = std::bind(&loadMap, lBuff + "/map");
 
-            auto play = new Button(lBuff.c_str(), aa, {&bpX, yPos}, &playClosed, 2);
+            std::pair<intptr_t,intptr_t> fd = {(intptr_t)&bpX, (intptr_t)yPos};
+            auto play = new Button(lBuff.c_str(), aa, fd, &playClosed, 2);
             index++;
         }
         fileStream.close();
@@ -97,8 +98,11 @@ void MainMenu::Start() {
     };
 
 
-    auto play = new Button("Play", a, {&bpX, &bpY}, &bbDe, 2);
-    auto leveleditor = new Button("LevelEditor", b, {&bpX, &bpY2}, &bbDe, 2);
+    std::pair<intptr_t,intptr_t > fd = {(intptr_t)&bpX, (intptr_t)&bpY};
+    std::pair<intptr_t,intptr_t> bg = {(intptr_t)&bpX, (intptr_t)&bpY2};
+
+    auto play = new Button("Play", a, fd, &bbDe, 2);
+    auto leveleditor = new Button("LevelEditor", b, bg, &bbDe, 2);
 
 /*    auto b = new Button(a, {300,300,200,100}, &bbDe);
     b->SetTopTexture("Play", {0,0,0}, {255,255,255});
@@ -127,8 +131,11 @@ void MainMenu::OnGameEnd(bool bWon) {
             bEndMenuClosed = true;
         };
 
-        auto nl = new Button("Next Level", b, {&bpX, &bpY}, &bEndMenuClosed, 2);
-        auto dl = new Button("Quit", fQuit, {&bpX, &bpY2}, &bEndMenuClosed, 2);
+        std::pair<intptr_t, intptr_t> pos = {(intptr_t)&bpX, (intptr_t)&bpY};
+        std::pair<intptr_t, intptr_t> pos1 = {(intptr_t)&bpX, (intptr_t)&bpY2};
+
+        auto nl = new Button("Next Level", b, pos, &bEndMenuClosed, 2);
+        auto dl = new Button("Quit", fQuit, pos1, &bEndMenuClosed, 2);
 
 
     }else{
@@ -136,8 +143,14 @@ void MainMenu::OnGameEnd(bool bWon) {
         std::function<void(void)> b = [&](){
             bEndMenuClosed = true;
         };
-        auto nl = new Button("Retry", b, {&bpX, &bpY},  &bEndMenuClosed, 2);
-        auto dl = new Button("Quit", fQuit, {&bpX, &bpY2}, &bEndMenuClosed, 2);
+
+
+        std::pair<intptr_t, intptr_t> pos = {(intptr_t)&bpX, (intptr_t)&bpY};
+        std::pair<intptr_t, intptr_t> pos1 = {(intptr_t)&bpX, (intptr_t)&bpY2};
+
+
+        auto nl = new Button("Retry", b, pos,  &bEndMenuClosed, 2);
+        auto dl = new Button("Quit", fQuit, pos1, &bEndMenuClosed, 2);
 
 
 

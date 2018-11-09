@@ -13,7 +13,7 @@ public:
     Button(std::function<void(void)>& func, const SDL2pp::Rect dst, bool* pDisabled);
 
     Button(const std::string szMessage, std::function<void(void)>& func, const std::pair<int,int>& pos,  bool* pBDisabled, const int& scale);
-    Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale);
+    Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<intptr_t, intptr_t> &pos, bool *pBDisabled, const int &scale);
 
 
     void SetTopTexture(const std::string szMessage, const SDL_Color normal, const SDL_Color hover);
@@ -25,7 +25,7 @@ public:
     SDL2pp::Rect dstrect = {0,0,0,0};
     std::function<void(void)> pFunc{};
 
-    std::pair<int*, int*> dynamicPositions {};
+    std::pair<intptr_t, intptr_t> dynamicPositions {};
     bool bHasPointers = false;
     void Render(const bool& bHovered);
 private:
@@ -37,12 +37,6 @@ private:
     SDL2pp::Texture* bottomHover = nullptr;
 
     SDL2pp::Rect bSrcRect = {0,0,0,0};
-
-
-
-
-
-
 
 };
 

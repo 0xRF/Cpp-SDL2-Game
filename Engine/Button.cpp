@@ -44,8 +44,8 @@ void Button::Render(const bool& bHovered) {
 
     auto rct = dstrect;
     if(bHasPointers){
-        rct.x += *dynamicPositions.first;
-        rct.y += *dynamicPositions.second;
+        rct.x += *(int*)dynamicPositions.first;
+        rct.y += *(int*)dynamicPositions.second;
     }
 
 
@@ -65,7 +65,7 @@ void Button::Render(const bool& bHovered) {
 }
 
 
-Button::Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<int*, int*> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
+Button::Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<intptr_t, intptr_t> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
 
     bottomHover = Engine::LoadTexture("assets/ui_button_hover.png");
     bottom = Engine::LoadTexture("assets/ui_button.png");

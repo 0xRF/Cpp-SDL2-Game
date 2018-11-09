@@ -10,7 +10,7 @@ namespace UI {
 
 
     static std::vector<Button*> vButtons = std::vector<Button*>();
-
+    static std::vector<Button*> buttonsToAdd = std::vector<Button*>();
     SDL2pp::Texture* TextureFromString(const char* szMessage, const SDL_Color& color){
         auto surf = TTF_RenderText_Solid(pFont->Get(), szMessage, color);
 
@@ -74,22 +74,20 @@ namespace UI {
         auto mPos = InputManager::GetMousePos();
 
 
-        for(auto button : vButtons){
+        for(auto button : vButtons) {
 
-            if(*button->pbDisabled) {
-
+            if (!button|| *button->pbDisabled) {
+              //  throw "Okden";
                 continue;
             }
-
             bool hovered = false;
-            if(button->bHasPointers){
+            if (button->bHasPointers) {
                 auto dst = button->dstrect;
-                dst.x += *button->dynamicPositions.first;
-                dst.y += *button->dynamicPositions.second;
+                dst.x += *(int *) button->dynamicPositions.first;
+                dst.y += *(int *) button->dynamicPositions.second;
                 hovered = dst.Contains(mPos.first, mPos.second);
-            }
-            else
-             hovered = (button->dstrect.Contains(mPos.first, mPos.second));
+            } else
+                hovered = (button->dstrect.Contains(mPos.first, mPos.second));
 
             button->Render(hovered);
 
@@ -204,8 +202,8 @@ namespace UI {
             bool hovered = false;
             if(button->bHasPointers){
                 auto dst = button->dstrect;
-                dst.x += *button->dynamicPositions.first;
-                dst.y += *button->dynamicPositions.second;
+                dst.x += *(int*)button->dynamicPositions.first;
+                dst.y += *(int*)button->dynamicPositions.second;
                 hovered = dst.Contains(mPos.first, mPos.second);
             }
             else
@@ -216,12 +214,15 @@ namespace UI {
 
         }
 
+        for(auto but : buttonsToAdd)
+            vButtons.push_back(but);
+        buttonsToAdd.clear();
 
 
     }
 
     void AddButton(Button *pButton) {
-        vButtons.push_back(pButton);
+        buttonsToAdd.push_back(pButton);
     }
 
 
