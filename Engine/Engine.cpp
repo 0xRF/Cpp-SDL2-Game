@@ -98,8 +98,6 @@ const bool Engine::Start()
 }
 
 void Engine::Stop() {
-
-    if(!_engine)return;
     _engine->bShutdown = true;
 }
 
@@ -418,7 +416,7 @@ void Engine::PlaySound(const SDL2pp::Chunk* pSound){
     if(!_engine || !_engine->g_pMixer)
         return;
 
-    _engine->g_pMixer->PlayChannel(-1, *pSound);
+ //   _engine->g_pMixer->PlayChannel(-1, *pSound);
 }
 void Engine::PlaySound(const SDL2pp::Music *pSound, bool bLoop) {
 
@@ -426,7 +424,7 @@ void Engine::PlaySound(const SDL2pp::Music *pSound, bool bLoop) {
         return;
 
 
-    _engine->g_pMixer->PlayMusic(*pSound, bLoop ? -1 : 0);
+  //  _engine->g_pMixer->PlayMusic(*pSound, bLoop ? -1 : 0);
 }
 
 

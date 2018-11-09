@@ -171,22 +171,18 @@ SDL2pp::Rect Player::GetBounds() {
 
 void Player::HurtMe() {
 
-    static SDL2pp::Chunk* pSound = new SDL2pp::Chunk("assets/hurt.mp3");
-Engine::PlaySound(pSound);
+    static SDL2pp::Chunk *pSound = new SDL2pp::Chunk("assets/hurt.mp3");
+    Engine::PlaySound(pSound);
 
     lives--;
 
-    if(lives == 0){
+    if (lives == 0)
         GameManager::Instance()->GameEnd(false);
 
-    } else {
+    velocity = {-velocity.x, -velocity.y};
 
-        velocity = {-velocity.x, -velocity.y};
-
-     //Restart level
-       // position = {300.0f, -50.0f};
-    }
-
+    //Restart level
+    // position = {300.0f, -50.0f};
 }
 
 void Player::CollectedKey(Key* pKey) {

@@ -69,8 +69,10 @@ void LevelEditor::Render() {
         ImGui::InputText("Map Name", mapName, sizeof(mapName));
 
         if (ImGui::Button("Save")) {
-            currentLevelName = mapName;
-            SaveMap(currentLevelName.c_str());
+            if (mapName != "") {
+                currentLevelName = mapName;
+                SaveMap(currentLevelName.c_str());
+            }
         }
     }
 

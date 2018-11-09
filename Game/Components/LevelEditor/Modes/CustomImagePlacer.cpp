@@ -66,6 +66,9 @@ void CustomImagePlacer::OnRender() {
 
         for(auto sKey : pEditor->mKeys){
 
+            if(sKey->bNeedsStart)
+                continue;
+
             auto rect = sKey->GetComponent<ImageRenderer>()->srcrect;
             rect.y = (int) sKey->position.y;
             rect.x = (int) sKey->position.x;
@@ -73,7 +76,7 @@ void CustomImagePlacer::OnRender() {
             auto spos = Camera::Instance().WorldToScreenPoint(sKey->position);
 
             if (rect.Contains(wpos.x, wpos.y)) {
-                UI::DrawRect(spos.first, spos.second, rect.w, rect.h, {255,0,0}, 1);
+                UI::DrawRect(spos.first, spos.second, rect.w, rect.h, {255,0,0}, 3);
             }
         }
 
@@ -160,8 +163,7 @@ void CustomImagePlacer::PlaceKey() {
         ch = 'm';
 
    auto tkey = new TutKey(ch);
-   pEditor->mKeys.push_back(tkey);
-
+    pEditor->mKeys.push_back(tkey);
    auto mpos = InputManager::GetMousePos();
    auto wpo = Camera::Instance().ScreenToWorldPoint(mpos);
    tkey->position = wpo;

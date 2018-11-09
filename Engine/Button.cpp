@@ -65,7 +65,7 @@ void Button::Render(const bool& bHovered) {
 }
 
 
-Button::Button(const std::string szMessage, std::function<void(void)> &func, const std::pair<intptr_t, intptr_t> &pos, bool *pBDisabled, const int &scale) : pFunc(func), pbDisabled(pBDisabled) {
+Button::Button(const std::string szMessage, std::function<void(void)> func, const std::pair<intptr_t, intptr_t> &pos, bool *pBDisabled, const int &scale) : pbDisabled(pBDisabled) {
 
     bottomHover = Engine::LoadTexture("assets/ui_button_hover.png");
     bottom = Engine::LoadTexture("assets/ui_button.png");
@@ -75,6 +75,8 @@ Button::Button(const std::string szMessage, std::function<void(void)> &func, con
 
     dstrect = {0 - ((bottom->GetWidth()*scale)/2), 0 - ((bottom->GetHeight()*scale)/2), (int)(bottom->GetWidth() * scale), (int)(bottom->GetHeight()* scale) };
     bHasPointers = true;
+
+    pFunc = func;
 
     dynamicPositions = pos;
     UI::AddButton(this);
@@ -92,4 +94,11 @@ Button::Button(const std::string szMessage, std::function<void(void)> &func, con
     dstrect = {pos.first - (int)(bottom->GetWidth()*scale)/2, pos.second - (int)(bottom->GetHeight()*scale)/2, (int)(bottom->GetWidth() * scale), (int)(bottom->GetHeight()* scale)};
 
     UI::AddButton(this);
+}
+
+Button::~Button() {
+
+    std::cout << "what the gay\n";
+
+
 }

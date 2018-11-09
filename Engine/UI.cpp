@@ -43,6 +43,7 @@ namespace UI {
 
     void Render() {
 
+
         static Engine& engine = Engine::Instance();
 
 
@@ -183,41 +184,37 @@ namespace UI {
 
     void HandleButtons() {
 
-        if(!InputManager::MouseClicked(SDL_BUTTON_LEFT))
-            return;
+        if(InputManager::MouseClicked(SDL_BUTTON_LEFT)) {
+            auto mPos = InputManager::GetMousePos();
 
-        auto mPos = InputManager::GetMousePos();
+            for (auto button : vButtons) {
 
-        for(auto button : vButtons){
+                if (!button)
+                    continue;
 
-            if(!button)
-                continue;
+                if (button->pbDisabled == nullptr)
+                    continue;
 
-            if(button->pbDisabled == nullptr)
-                continue;
+                if (*button->pbDisabled)
+                    continue;
 
-            if(*button->pbDisabled)
-                continue;
+                bool hovered = false;
+                if (button->bHasPointers) {
+                    auto dst = button->dstrect;
+                    dst.x += *(int *) button->dynamicPositions.first;
+                    dst.y += *(int *) button->dynamicPositions.second;
+                    hovered = dst.Contains(mPos.first, mPos.second);
+                } else
+                    hovered = (button->dstrect.Contains(mPos.first, mPos.second));
 
-            bool hovered = false;
-            if(button->bHasPointers){
-                auto dst = button->dstrect;
-                dst.x += *(int*)button->dynamicPositions.first;
-                dst.y += *(int*)button->dynamicPositions.second;
-                hovered = dst.Contains(mPos.first, mPos.second);
+                if (hovered)
+                    button->pFunc();
+
             }
-            else
-                hovered = (button->dstrect.Contains(mPos.first, mPos.second));
-
-            if(hovered)
-                button->pFunc();
-
         }
-
         for(auto but : buttonsToAdd)
             vButtons.push_back(but);
         buttonsToAdd.clear();
-
 
     }
 

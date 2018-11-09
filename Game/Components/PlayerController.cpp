@@ -19,8 +19,8 @@ static AnimatedRenderer* pAnimController = nullptr;
 void PlayerController::Render() {
 
     SDL_Color col = {255,0,0};
-    UI::DrawString(localPlayer->velocity.x, 20,20, 3, {255,0,0});
-   UI::DrawString(localPlayer->velocity.y, 20,50, 3, {255,0,0});
+//    UI::DrawString(localPlayer->velocity.x, 20,20, 3, {255,0,0});
+ //  UI::DrawString(localPlayer->velocity.y, 20,50, 3, {255,0,0});
 
    static SDL2pp::Texture* heart = Engine::LoadTexture("assets/heart.png");
     static SDL2pp::Texture* nheart = Engine::LoadTexture("assets/nheart.png");
