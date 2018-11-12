@@ -25,14 +25,13 @@ void CustomImagePlacer::OnUpdate() {
         while (it != pEditor->mKeys.end()) {
 
             auto rect = (*it)->GetComponent<ImageRenderer>()->srcrect;
-            rect.x = (int)(*it)->position.x;
-            rect.y = (int)(*it)->position.y;
+            rect.x = (int) (*it)->position.x;
+            rect.y = (int) (*it)->position.y;
 
             if (rect.Contains(wpos.x, wpos.y)) {
                 (*it)->bDestroy = true;
                 it = pEditor->mKeys.erase(it);
-            }
-            else
+            } else
                 it++;
         }
     }
@@ -40,9 +39,8 @@ void CustomImagePlacer::OnUpdate() {
     if(InputManager::MouseClicked(SDL_BUTTON_LEFT))
         PlaceKey();
 
-    if(InputManager::KeyPressed(SDLK_k))
-    {
-        if(mde < 2)
+    if(InputManager::KeyPressed(SDLK_k)) {
+        if (mde < 2)
             mde++;
         else
             mde = 0;

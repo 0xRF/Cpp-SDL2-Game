@@ -91,14 +91,15 @@ Button::Button(const std::string szMessage, std::function<void(void)> &func, con
     top = UI::TextureFromString(szMessage.c_str(), {0, 0, 0});
     topHover = UI::TextureFromString(szMessage.c_str(), {255, 255, 255});
 
-    dstrect = {pos.first - (int)(bottom->GetWidth()*scale)/2, pos.second - (int)(bottom->GetHeight()*scale)/2, (int)(bottom->GetWidth() * scale), (int)(bottom->GetHeight()* scale)};
+    dstrect = {pos.first - bottom->GetWidth() * scale / 2, pos.second - bottom->GetHeight() * scale / 2,
+               (bottom->GetWidth() * scale), (bottom->GetHeight() * scale)};
 
     UI::AddButton(this);
 }
 
 Button::~Button() {
 
-    std::cout << "what the gay\n";
+    std::cout << "what the no\n";
 
 
 }

@@ -20,7 +20,7 @@ void PlayerController::Render() {
 
     SDL_Color col = {255,0,0};
 //    UI::DrawString(localPlayer->velocity.x, 20,20, 3, {255,0,0});
- //  UI::DrawString(localPlayer->velocity.y, 20,50, 3, {255,0,0});
+  // UI::DrawString(localPlayer->position.y, 20,50, 3, {255,0,0});
 
    static SDL2pp::Texture* heart = Engine::LoadTexture("assets/heart.png");
     static SDL2pp::Texture* nheart = Engine::LoadTexture("assets/nheart.png");
@@ -44,6 +44,13 @@ void PlayerController::Start() {
 
 
 void PlayerController::Update(const float &deltaTime) {
+
+
+    if(localPlayer->position.y > 1000){
+        localPlayer->HurtMe();
+        localPlayer->position = {300.0f, 300.0f};
+        localPlayer->velocity = Vector2::Zero;
+    }
 
     if(InputManager::KeyDown(SDLK_0)) {
         localPlayer->position = {60.0f, 320.0f};
@@ -139,23 +146,23 @@ bool PlayerController::SolveCollision(const float& deltaTime) {
 
     for(auto hit : hits) {
 
-       auto right = abs(hit.x + hit.w - player.x);
-       auto left = abs(player.x + player.w - hit.x);
-       auto bottom = abs(hit.y + hit.h - player.y);
-       auto top = abs(player.y + player.h - hit.y);
+        auto right = abs(hit.x + hit.w - player.x);
+        auto left = abs(player.x + player.w - hit.x);
+        auto bottom = abs(hit.y + hit.h - player.y);
+        auto top = abs(player.y + player.h - hit.y);
 
-        if(left < right && left < top && left && left < bottom){ //hit right side??
+        if (left < right && left < top && left && left < bottom) { //hit right side??
             localPlayer->position.x = hit.x - player.w - 32;
             localPlayer->velocity.x = 0;
 
-        }else if(right < left && right < top && right < bottom){
+        } else if (right < left && right < top && right < bottom) {
             localPlayer->position.x = hit.x + hit.w - 32;//hit left side
             localPlayer->velocity.x = 0;
-        }else if(top < left && top < right && top < bottom){//ground
+        } else if (top < left && top < right && top < bottom) {//ground
             localPlayer->position.y = hit.y - player.h + 1;
             localPlayer->velocity.y = 0;
             bGrounded = true;
-        }else if(bottom < left && bottom < right && bottom < top){//Hit head
+        } else if (bottom < left && bottom < right && bottom < top) {//Hit head
             localPlayer->position.y = hit.y + hit.h;
             localPlayer->velocity.y = 0;
         }

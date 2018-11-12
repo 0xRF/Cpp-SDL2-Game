@@ -9,6 +9,7 @@ struct BGTile{
 
     std::vector<SDL_Color> pixels = std::vector<SDL_Color>();
 
+    //copy all the pixels to a buffer
     BGTile(const int& x, const int& y, const int& w, const int& h, SDL_Surface* surface) : width(w), height(h), pixels(std::vector<SDL_Color>())
     {
         for (int i = x; i < x + w; i++)
@@ -25,15 +26,17 @@ void BG::AddPixelsToSurface(const int& x, const int& y, BGTile* tile, SDL_Surfac
 
     for (int index = 0; index < tile->pixels.size(); index++) {
 
+        //convert the index of the pixel into x and y coords
         int i = index % tile->width + x;
         int j = index / tile->width + y;
 
-
+        //grab pixel at the position
         auto pixel = (SDL_Color *) ((Uint8 *) surface->pixels + j * surface->pitch + i * surface->format->BytesPerPixel);
 
         if(i >= bounds.w || j >= bounds.h)
             break;
 
+        //set the pixel to equal what we want it to.
         *pixel = tile->pixels[index];
     }
 }
@@ -42,12 +45,13 @@ void BG::AddPixelsToSurface(const int& x, const int& y, BGTile* tile, SDL_Surfac
 void BG::GenerateBackground(const char *szFileName, const int &offsetx, const int &offsety, const int &width,
                         const int &height) {
 
+    //didnt think this part through much
     bounds.w = width*3;
     bounds.h = height*3;
 
     Uint32 rmask, gmask, bmask, amask;
 
-
+//different operating systems well, direct x and opengl, vulkan etc have different orders of things.
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         rmask = 0xff000000;
         gmask = 0x00ff0000;
@@ -61,7 +65,7 @@ void BG::GenerateBackground(const char *szFileName, const int &offsetx, const in
     #endif
 
 
-
+    //Copy in our tilemap into a surface
     auto tileMap =  SDL2pp::Surface(szFileName);
     auto bgSurf = SDL2pp::Surface(0, bounds.w, bounds.h, 32, rmask, gmask , bmask, amask);
 
@@ -72,10 +76,10 @@ void BG::GenerateBackground(const char *szFileName, const int &offsetx, const in
         tiles.push_back(new BGTile(i * 32, 192 - 32, 32, 32, tileMap.Get()));
     }
 
-
+//loop through and set our pixels at random to the tiles.
     for(int i = 0; i < bounds.w; i+=32) {
         for (int j = 0; j < bounds.h; j += 32) {
-            AddPixelsToSurface(i, j, tiles[rand() % 8], bgSurf.Get());
+            AddPixelsToSurface(i, j, tiles[rand() % tiles.size()], bgSurf.Get());
 
 
             // SDL_Color* pixel = (SDL_Color *)((Uint8 *)bgSurf.Get()->pixels + j * bgSurf.Get()->pitch + i * bgSurf.Get()->format->BytesPerPixel);
@@ -84,12 +88,18 @@ void BG::GenerateBackground(const char *szFileName, const int &offsetx, const in
 
         }
     }
+    //convert into a gpu driven texture.
     pTexture = new SDL2pp::Texture(*Engine::Instance().g_pRenderer, bgSurf);
 
+    //clean up memory
+    for(auto tile : tiles)
+        delete tile;
+    tiles.clear();
 }
 
 void BG::Render(){
 
+    //render the background across the whole screen.
     SDL_Rect world = {0,0, Camera::Instance().viewport.w, Camera::Instance().viewport.h};
     SDL_Rect src = {bounds.x, bounds.y, bounds.w, bounds.h};
     SDL_RenderCopy(&*Engine::Instance().g_pRenderer->Get(), &*pTexture->Get(),  &src, nullptr);

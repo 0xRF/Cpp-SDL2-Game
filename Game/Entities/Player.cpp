@@ -176,9 +176,10 @@ void Player::HurtMe() {
 
     lives--;
 
-    if (lives == 0)
+    if (lives == 0) {
         GameManager::Instance()->GameEnd(false);
-
+        bDestroy = true;
+    }
     velocity = {-velocity.x, -velocity.y};
 
     //Restart level
@@ -186,8 +187,6 @@ void Player::HurtMe() {
 }
 
 void Player::CollectedKey(Key* pKey) {
-
-
 
 }
 

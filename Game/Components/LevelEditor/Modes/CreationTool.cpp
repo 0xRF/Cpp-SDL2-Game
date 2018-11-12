@@ -23,7 +23,6 @@ Empty* CreationTool::GetEntity(std::pair<int, int> pos) {
 void CreationTool::OnUpdate(){
 
 //auto mousePos = InputManager::GetMousePos();
-
     if(InputManager::MouseClicked(SDL_BUTTON_LEFT)){
 
 

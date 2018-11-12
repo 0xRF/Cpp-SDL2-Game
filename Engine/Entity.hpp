@@ -13,6 +13,7 @@ inline const std::size_t GetEntityID()
     return id++;
 }
 
+//gives each entity type declared a new identifer
 template <typename T> const inline std::size_t GetEntityID()
 {
     static std::size_t id = GetEntityID();
@@ -42,6 +43,7 @@ public:
      BaseEntity(const float& scale, const Vector2& startingPos);
 
 
+     //Adds a component...
     template <typename C>
     C* const AddComponent(const C& component)
     {
@@ -52,6 +54,7 @@ public:
         return static_cast<C*>(components[C::CID()]);
     }
 
+    //...Returns component...
     template <typename C>
     C* GetComponent() {
         if (components[C::CID()])
@@ -62,6 +65,7 @@ public:
         }
     }
 
+    //Remove component of type
     template <typename C>
     void RemoveComponent()
     {
@@ -73,6 +77,7 @@ public:
     virtual ~BaseEntity(){};
 };
 
+//Entity as a template
 template <typename T>
 class Entity : public BaseEntity {
 
@@ -83,6 +88,7 @@ public:
 
     const static std::size_t EID(){ return GetEntityID<T>(); };
 
+    //give each entity a unique id
     std::size_t ID() override {
         static size_t id = GetEntityID<T>();
         return id;
@@ -91,6 +97,7 @@ public:
 };
 
 
+//an empty entity with now special things, suppose to be a default thinng
 class Empty : public Entity<Empty>{
 public:
 

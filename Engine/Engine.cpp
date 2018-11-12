@@ -124,6 +124,7 @@ void loadAsm(const char* assm){
     }
 }
 
+//going to be typedef for windows and others etc.
 const char* libraries[] = {
         "libSDL2-2.0.0.dylib",
         "libSDL2_image-2.0.0.dylib",
@@ -144,18 +145,22 @@ const char* libraries[] = {
 }; //16 libs
 int main(int argc, const char* args[]){
 
+    //set the current working directy a fixup for macosx
     std::string meme(args[0]);
     chdir(meme.substr(0, meme.size() - 8).c_str());
 
 
     std::cout << "Loading dependencies\n";
 
+    //load libraries
     for(int i = 0; i <16; i++){
-   //     loadAsm(("libs/" + std::string(libraries[i])).c_str());
+     //  loadAsm(("libs/" + std::string(libraries[i])).c_str());
     }
 
+    //if engine returns false quit application idk, why I used assert.
     SDL_assert(Engine::Start());
 
+    //run the update loop
     Engine::Instance().Update();
 
 
@@ -163,6 +168,7 @@ int main(int argc, const char* args[]){
 }
 
 
+//ignore
 int Engine::RenderThread(void* data){
 
     std::cout << "Render Thread Started\n";
@@ -201,15 +207,18 @@ void Engine::Update() {
 
     std::cout << "Update Started\n Waiting for Render Thread\n";
 
+    //was in here when there was a seperate render thread
     while(!g_pRenderer){ SDL_Delay(300);}
     std::cout << "Render & Window Created!\n";
 
+    //create ackground, desiered effect not achived by who cares.
     BG::GenerateBackground("assets/duntiles.png", 0,0, 2400, 2400);
 
+
+    //play the background music provided by the music students
     SDL2pp::Music music("assets/song.mp3");
     PlaySound(&music, true);
 
-   //LevelManager::LoadMap("uLevel");
 
     new GameManager;
 
@@ -228,9 +237,9 @@ void Engine::Update() {
 
       int wheel = 0;
 
+      //handle events
+              //eg adjusting the view of the cameras
       while (SDL_PollEvent(&event)) {
-
-
 
           if(event.type == SDL_QUIT) {
               bShutdown = true;
@@ -262,8 +271,7 @@ void Engine::Update() {
         int mouseX, mouseY;
         const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
 
-        // Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or write to those fields from your Windows message loop handlers, etc.)
-
+        //setup input for imgui
         io.DeltaTime = 1.0f / 60.0f;
         io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
         io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
@@ -273,6 +281,8 @@ void Engine::Update() {
 
         ImGui::NewFrame();
 
+        //as entities and other functions look at the entity list, we need to seperate added funcitons at the stsrt so the size
+        // of the vector doesnt change which screws with looping through all entitty componenets
         for(auto it = entToAdd.begin(); it != entToAdd.end(); ++it) {
             entityList.push_back((*it));
         }
@@ -284,48 +294,48 @@ void Engine::Update() {
         while (it != entityList.end()) {
 
 
-            if((*it)->bDestroy) {
+            //if entity is destoryed remove it now so we can update the iterator
+            if ((*it)->bDestroy) {
                 (*it)->OnDestroy();
 
                 delete (*it);
-               it = entityList.erase(it);
+                it = entityList.erase(it);
 
-            }
-            else {
+            } else {
 
-
-                if((*it)->bNeedsStart) {
+            //if entiy needs start, call start function, probaby could move this above in the entity to add loop
+                if ((*it)->bNeedsStart) {
                     (*it)->Start();
                     (*it)->bNeedsStart = false;
                 }
 
-                for(int i = 0; i < 8; i++) {
+                for (int i = 0; i < 8; i++) {
 
 
                     BaseComponent *pComp = (*it)->components[i];
                     if (!pComp)continue;
 
-                     if (pComp->bDestroy) {
-                        size_t size =  pComp->Size();
+                    if (pComp->bDestroy) {
+                        size_t size = pComp->Size();
                         delete pComp;
                         std::cout << "Destroyed Component\n";
-                        (*it)->components[i]  = 0;
+                        (*it)->components[i] = 0;
 
                     } else {
 
-                         pComp->ForceUpdate();
+                        pComp->ForceUpdate();
 
-                         if((*it)->bEnabled) {
+                        if ((*it)->bEnabled) {
 
-                             if (pComp->bEnabled) {
-                                 pComp->Update(deltaTime);
-                                 pComp->Render();
+                            if (pComp->bEnabled) {
+                                pComp->Update(deltaTime);
+                                pComp->Render();
 
-                                 if (bShutdown)
-                                     break;
-                             }
-                         }
-                     }
+                                if (bShutdown)
+                                    break;
+                            }
+                        }
+                    }
                 }
                 ++it;
             }
@@ -345,7 +355,7 @@ void Engine::Update() {
 
             auto currTicks = SDL_GetTicks();
 
-
+            //count fps
             if (lastFrameUpdate < currTicks - 1.0 * 1000) {
                 lastFps = fps;
                 g_pWindow->SetTitle("FPS " + std::to_string(fps));
@@ -356,10 +366,8 @@ void Engine::Update() {
             UI::DrawString("FPS: ", 10, 20, 2, {0, 255, 255});
             UI::DrawString(lastFps, 40, 20, 2, {0, 255, 255});
 
-            if (lastFrame < 1000 / 120) {
-                //        SDL_Delay((1000 / 120) - lastFrame);
-            }
 
+            //count fps
             deltaTime = (currTicks - lastFrame) / 1000;
             lastFrame = currTicks;
             fps++;
@@ -395,7 +403,7 @@ SDL2pp::Texture* Engine::LoadTexture(const char* szFileName){
     //return it.
     return (*pMap)[szFileName];
 }
-
+//explained in Engine::Update
 void Engine::AddEntity(BaseEntity *pEnt) {
     entToAdd.push_back(pEnt);
 }
@@ -416,15 +424,14 @@ void Engine::PlaySound(const SDL2pp::Chunk* pSound){
     if(!_engine || !_engine->g_pMixer)
         return;
 
- //   _engine->g_pMixer->PlayChannel(-1, *pSound);
+   _engine->g_pMixer->PlayChannel(-1, *pSound);
 }
 void Engine::PlaySound(const SDL2pp::Music *pSound, bool bLoop) {
 
     if(!_engine || !_engine->g_pMixer)
         return;
 
-
-  //  _engine->g_pMixer->PlayMusic(*pSound, bLoop ? -1 : 0);
+    _engine->g_pMixer->PlayMusic(*pSound, bLoop ? -1 : 0);
 }
 
 

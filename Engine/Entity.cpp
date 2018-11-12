@@ -12,6 +12,8 @@
 
 #include "Engine.hpp"
 
+//add entity when init,
+//set all the pointers the components to 0, rather than what every memeory was there previously
 BaseEntity::BaseEntity() : scale(1.0f), position({0.0f, 0.0f}), bDestroy(false), bNeedsStart(true){
     memset(components, 0, sizeof(components));
     Engine::AddEntity(this);

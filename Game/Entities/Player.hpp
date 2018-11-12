@@ -25,9 +25,10 @@ public:
     SDL2pp::Rect GetFutureBounds(const float& deltaTime);
     SDL2pp::Rect GetBounds();
 
-private:
 
     void HurtMe();
+private:
+
     void CollectedKey(Key* pKey);
 
 };
