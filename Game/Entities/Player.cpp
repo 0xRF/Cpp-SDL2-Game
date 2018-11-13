@@ -180,8 +180,15 @@ void Player::HurtMe() {
         GameManager::Instance()->GameEnd(false);
         bDestroy = true;
     }
-    velocity = {-velocity.x, -velocity.y};
 
+
+    if(sqrt((velocity.x*velocity.x + velocity.y*velocity.y)) < 1.0f)
+    {
+        velocity.y = -velocity.y/2;
+    }
+    else {
+        velocity = {-velocity.x, -velocity.y};
+    }
     //Restart level
     // position = {300.0f, -50.0f};
 }

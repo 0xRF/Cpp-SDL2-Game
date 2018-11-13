@@ -15,12 +15,39 @@
 #include <SDL2/SDL.h>
 #include <map>
 
+
+bool bPaused = false;
+
 static AnimatedRenderer* pAnimController = nullptr;
+
+#include "../../imgui/imgui.h"
 void PlayerController::Render() {
 
+    if(bPaused) {
+     //   ImGui::SetNextWindowSize(ImVec2(300, 300));
+        ImGui::Begin("Paused");
+
+        if(ImGui::Button("Quit")){
+            Engine::Stop();
+            ImGui::End();
+            return;
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Resume")){
+            bPaused = false;
+            ImGui::End();
+            return;
+        }
+
+
+
+        ImGui::End();
+        return;
+    }
+
     SDL_Color col = {255,0,0};
-//    UI::DrawString(localPlayer->velocity.x, 20,20, 3, {255,0,0});
-  // UI::DrawString(localPlayer->position.y, 20,50, 3, {255,0,0});
+ // UI::DrawString(localPlayer->velocity.x, 20,20, 3, {255,0,0});
+ // UI::DrawString(localPlayer->velocity.y, 20,50, 3, {255,0,0});
 
    static SDL2pp::Texture* heart = Engine::LoadTexture("assets/heart.png");
     static SDL2pp::Texture* nheart = Engine::LoadTexture("assets/nheart.png");
@@ -44,6 +71,14 @@ void PlayerController::Start() {
 
 
 void PlayerController::Update(const float &deltaTime) {
+
+
+    if(InputManager::KeyPressed(SDLK_ESCAPE))
+        bPaused = !bPaused;
+
+    if(bPaused) {
+        return;
+    }
 
 
     if(localPlayer->position.y > 1000){
