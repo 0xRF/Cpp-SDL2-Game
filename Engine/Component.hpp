@@ -8,6 +8,7 @@ inline const std::size_t GetComponentID()
     return id++;
 }
 
+//creates a static component id for each indivudal component
 template <typename T> const inline std::size_t GetComponentID()
 {
     static std::size_t id = GetComponentID();

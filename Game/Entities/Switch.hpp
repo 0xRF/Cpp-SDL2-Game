@@ -28,6 +28,7 @@ public:
 
     Switch(SDL2pp::Rect toggleZone) : toggleZone(toggleZone){
         std::cout << "hg\n";
-
     }
+
+    bool bUsed = false;
 };

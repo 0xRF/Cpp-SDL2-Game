@@ -85,6 +85,7 @@ std::vector<SDL2pp::Rect> Player::GetCollisions(const float& deltaTime) {
     std::vector<Collider *>* allColls = &GameManager::Instance()->pCurrentLevel->worldColliders;
 
 
+//    UI::DrawString((std::to_string(GameManager::Instance()->pCurrentLevel->bGrabbedKey) + " Collected Key").c_str(), 100,100, 3, {255,0,0});
 
 
     auto ret = std::vector<SDL2pp::Rect>();
@@ -133,17 +134,20 @@ std::vector<SDL2pp::Rect> Player::GetCollisions(const float& deltaTime) {
 
             if ((*it)->entity->ID() == Spike::EID())
                 HurtMe();
-            else if ((*it)->entity->ID() == Key::EID() && !GameManager::Instance()->bGrabbedKey) {
-                GameManager::Instance()->bGrabbedKey = true;
+            else if ((*it)->entity->ID() == Key::EID() && !GameManager::Instance()->pCurrentLevel->bGrabbedKey) {
+                GameManager::Instance()->pCurrentLevel->bGrabbedKey = true;
                 (*it)->entity->bDestroy = true;
                 it = allColls->erase(it);
                 continue;
 
             } else if ((*it)->entity->ID() == Door::EID()) {
-                if (GameManager::Instance()->bGrabbedKey) {
+
+                if (GameManager::Instance()->pCurrentLevel->bGrabbedKey) {
                     //Level complete
+
                     GameManager::Instance()->GameEnd(true);
                 }
+
             }
             else {
                 ret.push_back((*it)->GetBounds());
@@ -179,18 +183,10 @@ void Player::HurtMe() {
     if (lives == 0) {
         GameManager::Instance()->GameEnd(false);
         bDestroy = true;
+    } else {
+        position = {300.0f, 300.0f};
+        velocity = Vector2::Zero;
     }
-
-
-    if(sqrt((velocity.x*velocity.x + velocity.y*velocity.y)) < 1.0f)
-    {
-        velocity.y = -velocity.y/2;
-    }
-    else {
-        velocity = {-velocity.x, -velocity.y};
-    }
-    //Restart level
-    // position = {300.0f, -50.0f};
 }
 
 void Player::CollectedKey(Key* pKey) {

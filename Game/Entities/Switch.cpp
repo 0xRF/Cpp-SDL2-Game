@@ -34,15 +34,31 @@ void Switch::Start()
 
 void Switch::OnUse() {
 
-    std::cout << entitiesToToggle.size() << "a \n";
-    std::cout << colldiersToToggle.size() << "b \n";
+    bUsed = !bUsed;
+
+    if(bUsed)
+        scale = -2.0f;
+    else
+        scale =2.0f;
+
+    std::cout << entitiesToToggle.size() << "entties \n";
+    std::cout << colldiersToToggle.size() << "colldiers \n";
 
     for (auto ent : entitiesToToggle) {
-        ent->bEnabled = !ent->bEnabled;
+        ent->bEnabled = !bUsed;
+    }
+
+    if(colldiersToToggle.size() == 0){
+        for (auto pCol : GameManager::Instance()->pCurrentLevel->worldColliders) {
+
+            if (pCol->GetBounds().Intersects(toggleZone))
+                colldiersToToggle.push_back(pCol);
+        }
     }
 
     for(auto pCol : colldiersToToggle) {
-        pCol->bEnabled = !pCol->bEnabled;
+        std::cout <<";:;\n";
+        pCol->bEnabled = !bUsed;
     }
 }
 

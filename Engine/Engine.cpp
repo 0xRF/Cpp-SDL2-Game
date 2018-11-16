@@ -298,7 +298,11 @@ void Engine::Update() {
             if ((*it)->bDestroy) {
                 (*it)->OnDestroy();
 
-                delete (*it);
+                try {
+                    delete (*it);
+                }
+                catch(const std::exception& e) {}
+
                 it = entityList.erase(it);
 
             } else {
@@ -345,26 +349,28 @@ void Engine::Update() {
             UI::Render();
             UI::HandleButtons();
 
+            if(g_pRenderer) {
             ImGui::Render();
             ImGuiSDL::Render(ImGui::GetDrawData());
 
-            g_pRenderer->Present();
-            g_pRenderer->Clear();
+                g_pRenderer->Present();
+                g_pRenderer->Clear();
 
-            BG::Render();
-
+                BG::Render();
+            }
             auto currTicks = SDL_GetTicks();
 
             //count fps
             if (lastFrameUpdate < currTicks - 1.0 * 1000) {
                 lastFps = fps;
-                g_pWindow->SetTitle("FPS " + std::to_string(fps));
+           //     g_pWindow->SetTitle("FPS " + std::to_string(fps));
                 fps = 0;
                 lastFrameUpdate = SDL_GetTicks();
             }
 
-            UI::DrawString("FPS: ", 10, 20, 2, {0, 255, 255});
-            UI::DrawString(lastFps, 40, 20, 2, {0, 255, 255});
+
+            //UI::DrawString("FPS: ", 10, 20, 2, {0, 255, 255});
+          //  UI::DrawString(lastFps, 40, 20, 2, {0, 255, 255});
 
 
             //count fps

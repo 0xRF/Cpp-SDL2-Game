@@ -14,8 +14,6 @@ public:
 
     static GameManager* Instance();
 
-    bool bGrabbedKey = false;
-
     void GameEnd(bool bWin);
 
 private:

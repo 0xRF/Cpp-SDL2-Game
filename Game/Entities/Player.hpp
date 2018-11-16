@@ -17,7 +17,6 @@ public:
 
     bool Collides(SDL2pp::Rect* pHit);
 
-
     int lives = 3;
 
     std::vector<SDL2pp::Rect> GetCollisions(const float& deltaTime);

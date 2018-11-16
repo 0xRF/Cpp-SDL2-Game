@@ -13,7 +13,11 @@
 #include "../../Engine/Camera.hpp"
 #include <fstream>
 #include "../Entities/Player.hpp"
-
+#include "../Components/Collider.hpp"
+#include "../Entities/Spike.hpp"
+#include "../Entities/TutKey.hpp"
+#include "../Entities/Switch.hpp"
+#include "../Entities/Key.hpp"
 static Camera* pCam = nullptr;
 static SDL2pp::Texture *pTexture = nullptr;
 static int bpX = 0;
@@ -115,8 +119,29 @@ void MainMenu::OnDestroy() {
 
 
 static bool bRanOnce = false;
+bool playedMapOnce = false;
 //memory leak central
 void MainMenu::OnGameEnd(bool bWon) {
+
+    if(playedMapOnce)
+    {
+        bEndMenuClosed = false;
+
+        static std::function<void(void)> lol = [&]() {
+
+            bEndMenuClosed = true;
+
+            Engine::Stop();
+        };
+
+            std::pair<intptr_t, intptr_t> pos = {(intptr_t)&bpX, (intptr_t)&bpY};
+
+        std::pair<int,int> wtho = {300,300};
+        auto nl = new Button("End", lol, pos,  &bEndMenuClosed, 2);
+
+        return;
+    }
+
     if(bRanOnce)
         return;
 bRanOnce = true;
@@ -132,16 +157,50 @@ bRanOnce = true;
 
     if(bWon){
 
-        static std::function<void(void)> b = [&](){
+        static std::function<void(void)> b = [&]() {
             bEndMenuClosed = true;
             //bChoiceMade = true;
+
+            auto pLevel = GameManager::Instance()->pCurrentLevel;
+
+
+            std::ifstream fileStream("alllevels");
+            std::string lBuff;
+            bool exists = false;
+            int index = 0;
+
+            bool nxtMap = false;
+            std::string szNxtMap = "";
+            while(std::getline(fileStream, lBuff))
+            {
+                if(nxtMap){
+                    szNxtMap = lBuff;
+                }
+
+                if(std::string(lBuff + "/map") == pLevel->levelName)
+                        nxtMap = true;
+
+            }
+            fileStream.close();
+
+
+            if(szNxtMap != ""){
+                pLevel->ChangeLevel(szNxtMap + "/map");
+                playedMapOnce = true;
+                //GameManager::Instance()->pCurrentLevel = Level::LoadLevel(szNxtMap + "/map");
+                new Player;
+
+            }else {
+                Engine::Stop();
+            }
+
         };
 
         std::pair<intptr_t, intptr_t> pos = {(intptr_t)&bpX, (intptr_t)&bpY};
         std::pair<intptr_t, intptr_t> pos1 = {(intptr_t)&bpX, (intptr_t)&bpY2};
 
         auto nl = new Button("Next Level", b, pos, &bEndMenuClosed, 2);
-        auto dl = new Button("Quit", fQuit, pos1, &bEndMenuClosed, 2);
+    //    auto dl = new Button("Quit", fQuit, pos1, &bEndMenuClosed, 2);
 
 
     }else{
@@ -159,7 +218,7 @@ bRanOnce = true;
 
         std::pair<int,int> wtho = {300,300};
         auto nl = new Button("Retry", b, pos,  &bEndMenuClosed, 2);
-        auto dl = new Button("Quit", fQuit, pr, &bEndMenuClosed, 2);
+     //   auto dl = new Button("Quit", fQuit, pr, &bEndMenuClosed, 2);
     }
 
     bEndMenuClosed = false;

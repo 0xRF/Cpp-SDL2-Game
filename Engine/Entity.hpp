@@ -36,7 +36,7 @@ public:
     Vector2 position = {0.0f, 0.0f};
     float scale = 1.0f;
 
-     BaseEntity();
+    BaseEntity();
 
      BaseEntity(const float& scale);
 
@@ -47,6 +47,7 @@ public:
     template <typename C>
     C* const AddComponent(const C& component)
     {
+
         components[C::CID()] = (BaseComponent*) new C(component);
         components[C::CID()]->entity = this;
         components[C::CID()]->Start();
@@ -74,7 +75,6 @@ public:
 
 
 
-    virtual ~BaseEntity(){};
 };
 
 //Entity as a template
